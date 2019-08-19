@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+<meta name="date" content="2019-08-19" />
+
+<title>Introduction to APIS</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Introduction to APIS</h1>
+<h4 class="author"><div style="white-space: pre-line;">Ronan Griot <span class="math inline">\(^{1,2}\)</span>, François Allal <span class="math inline">\(^{3}\)</span>, Marc Vandeputte <span class="math inline">\(^{2,3}\)</span>
+
+<span class="math inline">\(^{1}\)</span>SYSAAF, Station LPGP/INRA, Campus de Beaulieu, Rennes, France
+<span class="math inline">\(^{2}\)</span>GABI, INRA, AgroParisTech, Université Paris-Saclay, France
+<span class="math inline">\(^{3}\)</span>MARBEC, Univ. Montpellier, Ifremer, CNRS, IRD, Palavas-les-Flots, France</div></h4>
+<h4 class="date">2019-08-19</h4>
+
+
+
+<div id="description" class="section level1">
+<h1>Description</h1>
+<p>This package includes all the functions to assign with APIS. Parentage assignment is widely used for farmed and natural populations. As most of the likelihood software are based on simulation, the estimation of the simulation parameters is a key point for assignment reliability. Among those parameters, the proportion of missing parent is one of the most important. To avoid estimation of missing parents, we developed APIS (Auto-Adaptive Parentage Inference Software), based on observed average Mendelian transmission probabilities. In this package, you will find all the functions to perform parentage assign.</p>
+</div>
+<div id="install-and-load-the-package" class="section level1">
+<h1>Install and load the package</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(APIS)</code></pre></div>
+
+</div>
+<div id="formate-your-data" class="section level1">
+<h1>Formate your data</h1>
+<p>APIS requires matrices of characters as inputs. Each matrix has individuals as rows, markers as columns. The individual labels are set as rownames. Marker labels are set as colnames. Each cell is the genotype of one marker, coded “All1/All2”. For example “A/A”, “A/B”, “B/B” for bi-allelic markers and “NA/NA” for missing value. For multi-allelic markers, use the generic coding “All1/All2”.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(<span class="st">&quot;APIS_offspring&quot;</span>)
+<span class="kw">data</span>(<span class="st">&quot;APIS_sire&quot;</span>)
+<span class="kw">data</span>(<span class="st">&quot;APIS_dam&quot;</span>)
+
+<span class="kw">head</span>(APIS_offspring[,<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>])</code></pre></div>
+<pre><code>##             marker_1 marker_2 marker_3 marker_4 marker_5 marker_6 marker_7
+## offspring_1 &quot;A/B&quot;    &quot;A/A&quot;    &quot;A/B&quot;    &quot;A/A&quot;    &quot;B/B&quot;    &quot;A/B&quot;    &quot;A/A&quot;   
+## offspring_2 &quot;A/B&quot;    &quot;A/A&quot;    &quot;A/B&quot;    &quot;B/B&quot;    &quot;A/B&quot;    &quot;A/A&quot;    &quot;A/A&quot;   
+## offspring_3 &quot;A/B&quot;    &quot;A/B&quot;    &quot;A/B&quot;    &quot;B/B&quot;    &quot;B/B&quot;    &quot;A/B&quot;    &quot;A/B&quot;   
+## offspring_4 &quot;A/A&quot;    &quot;B/B&quot;    &quot;B/B&quot;    &quot;A/B&quot;    &quot;B/B&quot;    &quot;A/B&quot;    &quot;A/B&quot;   
+## offspring_5 &quot;A/B&quot;    &quot;A/A&quot;    &quot;A/B&quot;    &quot;A/A&quot;    &quot;B/B&quot;    &quot;A/B&quot;    &quot;A/A&quot;   
+## offspring_6 &quot;A/B&quot;    &quot;A/B&quot;    &quot;B/B&quot;    &quot;A/A&quot;    &quot;B/B&quot;    &quot;B/B&quot;    &quot;A/A&quot;   
+##             marker_8 marker_9 marker_10
+## offspring_1 &quot;A/B&quot;    &quot;A/B&quot;    &quot;A/A&quot;    
+## offspring_2 &quot;B/B&quot;    &quot;A/B&quot;    &quot;A/A&quot;    
+## offspring_3 &quot;A/B&quot;    &quot;A/B&quot;    &quot;B/B&quot;    
+## offspring_4 &quot;B/B&quot;    &quot;A/B&quot;    &quot;B/B&quot;    
+## offspring_5 &quot;A/A&quot;    &quot;A/A&quot;    &quot;A/A&quot;    
+## offspring_6 &quot;B/B&quot;    &quot;A/B&quot;    &quot;A/B&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">rownames</span>(APIS_offspring[<span class="dv">1</span><span class="op">:</span><span class="dv">6</span>,])</code></pre></div>
+<pre><code>## [1] &quot;offspring_1&quot; &quot;offspring_2&quot; &quot;offspring_3&quot; &quot;offspring_4&quot; &quot;offspring_5&quot;
+## [6] &quot;offspring_6&quot;</code></pre>
+
+</div>
+<div id="prepare-the-inputs" class="section level1">
+<h1>Prepare the inputs</h1>
+<p>APIS main function requires 4 inputs :</p>
+<ul>
+<li><p>off.genotype = matrix of offspring genotypes coded as explained above</p></li>
+<li><p>sire.genotype = matrix of sires genotypes coded as explained above</p></li>
+<li><p>dam.genotype = matrix of dams genotypes coded as explained above</p></li>
+<li><p>error = accepted assignment error rate (What is the maximum error rate I accept in my assignment results ?)</p></li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(APIS_offspring[,<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>])</code></pre></div>
+<pre><code>##             marker_1 marker_2 marker_3 marker_4 marker_5 marker_6 marker_7
+## offspring_1 &quot;A/B&quot;    &quot;A/A&quot;    &quot;A/B&quot;    &quot;A/A&quot;    &quot;B/B&quot;    &quot;A/B&quot;    &quot;A/A&quot;   
+## offspring_2 &quot;A/B&quot;    &quot;A/A&quot;    &quot;A/B&quot;    &quot;B/B&quot;    &quot;A/B&quot;    &quot;A/A&quot;    &quot;A/A&quot;   
+## offspring_3 &quot;A/B&quot;    &quot;A/B&quot;    &quot;A/B&quot;    &quot;B/B&quot;    &quot;B/B&quot;    &quot;A/B&quot;    &quot;A/B&quot;   
+## offspring_4 &quot;A/A&quot;    &quot;B/B&quot;    &quot;B/B&quot;    &quot;A/B&quot;    &quot;B/B&quot;    &quot;A/B&quot;    &quot;A/B&quot;   
+## offspring_5 &quot;A/B&quot;    &quot;A/A&quot;    &quot;A/B&quot;    &quot;A/A&quot;    &quot;B/B&quot;    &quot;A/B&quot;    &quot;A/A&quot;   
+## offspring_6 &quot;A/B&quot;    &quot;A/B&quot;    &quot;B/B&quot;    &quot;A/A&quot;    &quot;B/B&quot;    &quot;B/B&quot;    &quot;A/A&quot;   
+##             marker_8 marker_9 marker_10
+## offspring_1 &quot;A/B&quot;    &quot;A/B&quot;    &quot;A/A&quot;    
+## offspring_2 &quot;B/B&quot;    &quot;A/B&quot;    &quot;A/A&quot;    
+## offspring_3 &quot;A/B&quot;    &quot;A/B&quot;    &quot;B/B&quot;    
+## offspring_4 &quot;B/B&quot;    &quot;A/B&quot;    &quot;B/B&quot;    
+## offspring_5 &quot;A/A&quot;    &quot;A/A&quot;    &quot;A/A&quot;    
+## offspring_6 &quot;B/B&quot;    &quot;A/B&quot;    &quot;A/B&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(APIS_sire[,<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>])</code></pre></div>
+<pre><code>##        marker_1 marker_2 marker_3 marker_4 marker_5 marker_6 marker_7
+## sire_1 &quot;A/A&quot;    &quot;A/B&quot;    &quot;A/B&quot;    &quot;B/B&quot;    &quot;B/B&quot;    &quot;B/B&quot;    &quot;A/B&quot;   
+## sire_2 &quot;A/B&quot;    &quot;A/A&quot;    &quot;A/B&quot;    &quot;A/B&quot;    &quot;B/B&quot;    &quot;B/B&quot;    &quot;A/B&quot;   
+## sire_3 &quot;B/B&quot;    &quot;A/B&quot;    &quot;A/B&quot;    &quot;A/B&quot;    &quot;A/B&quot;    &quot;A/A&quot;    &quot;A/B&quot;   
+## sire_4 &quot;A/A&quot;    &quot;A/B&quot;    &quot;A/B&quot;    &quot;B/B&quot;    &quot;B/B&quot;    &quot;A/B&quot;    &quot;A/B&quot;   
+## sire_5 &quot;A/B&quot;    &quot;A/B&quot;    &quot;B/B&quot;    &quot;A/B&quot;    &quot;B/B&quot;    &quot;A/A&quot;    &quot;A/B&quot;   
+## sire_6 &quot;B/B&quot;    &quot;A/A&quot;    &quot;B/B&quot;    &quot;A/A&quot;    &quot;B/B&quot;    &quot;A/B&quot;    &quot;A/A&quot;   
+##        marker_8 marker_9 marker_10
+## sire_1 &quot;A/B&quot;    &quot;A/B&quot;    &quot;A/A&quot;    
+## sire_2 &quot;A/B&quot;    &quot;B/B&quot;    &quot;A/B&quot;    
+## sire_3 &quot;B/B&quot;    &quot;A/B&quot;    &quot;A/B&quot;    
+## sire_4 &quot;B/B&quot;    &quot;A/B&quot;    &quot;B/B&quot;    
+## sire_5 &quot;A/B&quot;    &quot;A/A&quot;    &quot;B/B&quot;    
+## sire_6 &quot;A/A&quot;    &quot;A/B&quot;    &quot;A/B&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(APIS_dam[,<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>])</code></pre></div>
+<pre><code>##       marker_1 marker_2 marker_3 marker_4 marker_5 marker_6 marker_7
+## dam_1 &quot;A/B&quot;    &quot;A/A&quot;    &quot;B/B&quot;    &quot;A/A&quot;    &quot;B/B&quot;    &quot;A/B&quot;    &quot;A/A&quot;   
+## dam_2 &quot;A/A&quot;    &quot;A/A&quot;    &quot;A/B&quot;    &quot;A/B&quot;    &quot;A/B&quot;    &quot;A/B&quot;    &quot;A/A&quot;   
+## dam_3 &quot;A/B&quot;    &quot;A/A&quot;    &quot;A/B&quot;    &quot;A/B&quot;    &quot;A/B&quot;    &quot;A/A&quot;    &quot;A/A&quot;   
+## dam_4 &quot;A/B&quot;    &quot;A/B&quot;    &quot;A/B&quot;    &quot;B/B&quot;    &quot;B/B&quot;    &quot;A/B&quot;    &quot;A/A&quot;   
+## dam_5 &quot;A/A&quot;    &quot;A/A&quot;    &quot;A/B&quot;    &quot;A/B&quot;    &quot;A/B&quot;    &quot;A/A&quot;    &quot;A/A&quot;   
+## dam_6 &quot;A/B&quot;    &quot;A/A&quot;    &quot;A/B&quot;    &quot;A/B&quot;    &quot;B/B&quot;    &quot;A/B&quot;    &quot;A/B&quot;   
+##       marker_8 marker_9 marker_10
+## dam_1 &quot;A/B&quot;    &quot;A/B&quot;    &quot;A/A&quot;    
+## dam_2 &quot;B/B&quot;    &quot;B/B&quot;    &quot;A/B&quot;    
+## dam_3 &quot;B/B&quot;    &quot;A/B&quot;    &quot;A/B&quot;    
+## dam_4 &quot;A/B&quot;    &quot;B/B&quot;    &quot;B/B&quot;    
+## dam_5 &quot;A/A&quot;    &quot;A/B&quot;    &quot;A/A&quot;    
+## dam_6 &quot;A/B&quot;    &quot;A/B&quot;    &quot;A/B&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">error &lt;-<span class="st"> </span><span class="fl">0.05</span> <span class="co">#I accept 5% of errors in the results</span></code></pre></div>
+</div>
+<div id="running-the-assignment" class="section level1">
+<h1>Running the assignment</h1>
+<p>The main function to perform parentage assignment with APIS the “APIS()” function. Use the function as below, with default parameters for exclusion threshold and preselection of parents to maximize the reliability.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">result &lt;-<span class="st"> </span><span class="kw">APIS</span>(<span class="dt">off.genotype =</span> APIS_offspring,
+               <span class="dt">sire.genotype =</span> APIS_sire,
+               <span class="dt">dam.genotype =</span> APIS_dam,
+               <span class="dt">error =</span> error)</code></pre></div>
+</div>
+<div id="analyse-the-results" class="section level1">
+<h1>Analyse the results</h1>
+<p>APIS gives you 3 different outputs :</p>
+<ul>
+<li>pedigree</li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th>Pedigree header</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><em>off</em></td>
+<td>Offspring ID</td>
+</tr>
+<tr class="even">
+<td><em>sire</em></td>
+<td>Sire ID</td>
+</tr>
+<tr class="odd">
+<td><em>dam</em></td>
+<td>Dam ID</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>log containing Mendelian transmission probabilities, mismatches and deltas for the first 3 parent pairs</li>
+</ul>
+<table>
+<colgroup>
+<col width="17%"></col>
+<col width="82%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th>Log header</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><em>offspring</em></td>
+<td>offspring ID</td>
+</tr>
+<tr class="even">
+<td><em>mrk_genotype</em></td>
+<td>number of markers genotyped</td>
+</tr>
+<tr class="odd">
+<td><em>sire1</em></td>
+<td>ID of the most likely sire</td>
+</tr>
+<tr class="even">
+<td><em>dam1</em></td>
+<td>ID of the most likely dam</td>
+</tr>
+<tr class="odd">
+<td><em>mismatch1</em></td>
+<td>number of mismatches for the most likely parent pair (sire1, dam1)</td>
+</tr>
+<tr class="even">
+<td><em>mendel1</em></td>
+<td>average Mendelian transmission probability of the most likely parent pair (sire1, dam1)</td>
+</tr>
+<tr class="odd">
+<td><em>sire2</em></td>
+<td>ID of the second most likely sire</td>
+</tr>
+<tr class="even">
+<td><em>dam2</em></td>
+<td>ID of the second most likely dam</td>
+</tr>
+<tr class="odd">
+<td><em>mismatch2</em></td>
+<td>number of mismatches for the second most likely parent pair (sire2, dam2)</td>
+</tr>
+<tr class="even">
+<td><em>mendel2</em></td>
+<td>average Mendelian transmission probability of the second most likely parent pair (sire2, dam2)</td>
+</tr>
+<tr class="odd">
+<td><em>delta_Pmendel12</em></td>
+<td>mendel1 - mendel2</td>
+</tr>
+<tr class="even">
+<td><em>sire3</em></td>
+<td>ID of the third most likely sire</td>
+</tr>
+<tr class="odd">
+<td><em>dam3</em></td>
+<td>ID of the third most likely dam</td>
+</tr>
+<tr class="even">
+<td><em>mismatch3</em></td>
+<td>number of mismatches for the third most likely parent pair (sire3, dam3)</td>
+</tr>
+<tr class="odd">
+<td><em>mendel3</em></td>
+<td>average Mendelian transmission probability of the third most likely parent pair (sire3, dam3)</td>
+</tr>
+<tr class="even">
+<td><em>delta_Pmendel23</em></td>
+<td>mendel2 - mendel3</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>graphs of the distributions of deltas, Mendelian transmission probabilities and mismatches</li>
+</ul>
+<p>According to the graphs, you can change the threshold to improve your assignment.</p>
+<p>If you want to set up your threshold on Mendelian probabilities, use :</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">new.result &lt;-<span class="st"> </span><span class="kw">personalThreshold</span>(<span class="dt">APIS.result =</span> result,
+                                <span class="dt">method =</span> <span class="st">'Pmendel'</span>,
+                                <span class="dt">threshold =</span> <span class="fl">0.7</span>)</code></pre></div>
+<p>If you want to set up your threshold on mismatches, use :</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">new.result &lt;-<span class="st"> </span><span class="kw">personalThreshold</span>(<span class="dt">APIS.result =</span> result,
+                                <span class="dt">method =</span> <span class="st">'exclusion'</span>,
+                                <span class="dt">threshold =</span> <span class="dv">1</span>)</code></pre></div>
+
+</div>
+<div id="examples" class="section level1">
+<h1>Examples</h1>
+<div id="full-data" class="section level2">
+<h2>Full data</h2>
+<p>This example uses the 100 markers data sets provided by the package.</p>
+<p><br> <img src="data:image/png;base64,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" /><!-- --> <br></p>
+<p>When I look at the mismatch distributions, I prefer to use exclusion and allow for 1 mismatches (Figure 2).</p>
+<p><br></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">new.result &lt;-<span class="st"> </span><span class="kw">personalThreshold</span>(<span class="dt">APIS.result =</span> result,
+                                <span class="dt">method =</span> <span class="st">'exclusion'</span>,
+                                <span class="dt">threshold =</span> <span class="dv">1</span>,
+                                <span class="dt">verbose =</span> <span class="ot">FALSE</span>)</code></pre></div>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAwAAAAGACAMAAAAtcPVNAAABDlBMVEUAAAAAADoAAGYAOmYAOpAAZrYAv8QzMzM6AAA6ADo6AGY6OpA6kNtNTU1NTW5NTY5NbqtNjshmAABmADpmAGZmOgBmOpBmZgBmZmZmkJBmtrZmtttmtv9uTU1uTW5uTY5ubo5ubqtuq+SOTU2OTW6OTY6Obk2ObquOyP+QOgCQOjqQOmaQkDqQkGaQtpCQ27aQ2/+rbk2rbm6rbo6rjk2ryKur5OSr5P+2ZgC2Zjq225C22/+2/7a2/9u2///GhX7Ijk3I///bkDrbtmbb25Db/7bb/9vb///kq27k///r6+vy8vL1jYb4dm35kYr/tmb/yI7/25D/27b/29v/5Kv//7b//8j//9v//+T///8UNg5MAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAc50lEQVR4nO2dj3/cNJrGPd3MMgmTAoHlWHYKSwt3CUtKyh7X2eM2pLPHpaVQZyDTxP//P3KSLNuSLXtkW7Yk6/l+2njGtl5pPO9j/fQ7UQJAwES2CwCATSAAEDQQAPCLu7OIMhd2bQ8vkt9+6GYOAgB+cXe2ZH8PrvNdRABUA52AAIBfpAJIdierfNdAArg5Pn7vRZK8fXL8/qt8A4BduACSzTxtDj24JAJ4uoiiZbIlf6NlO3P1Arj9/EXy8oPk/tmpsOH8rIPeWd0Z2L7nxZ/A5WkWQHxwfXdGRLA5uOY1AKsUNkQQZgTARfD2qxfCBgKA/VHMawjgwWVMnZ24PRfA77RX0LYt1CwAcs+//eJV8vbL53xD9r1DaJVFkvyxQksDAGQINcCGjQdFy7wPEJN3M3MCuH308Hly8z7zfL7hR1reI6oCMHSPGBLP79ATuDzNAljPaeuHvcybQMT5zdYAxa2/qAEgANgf3vxeAdAGf8zv9lwAMdVDbLAGIFydmugDQADTs29ZAGwegP0hHk+8P9PDdmFMALzRc//scToK9Lj7KBAEMD37FgWQNvyz17zZs47m5H80+1aYH+gngOTl8THpAyjnAVpeIghgevatCcAw3WaCW14iCGB69iGAFpcIApie/bAF0BLMAwBXQQ1gybzv9sOuAVpeIghgevYhgBaXCAKYnn0IoMUlggCmZz8AAdw+Oj4+xTwA7NswXy+AX5UMIAC68uf2s+cmngeAAKZn3zEBvDYvgBvq7lgLBPtWzDsgAIpqNSieBwA2GVMAdAXcMM8DKOhyjxgSz+/QE7g81gXw9snjpPpEGAQA+8Obd0EAt49OqQoG6QNAAL7bn74AUv9PhnkeAALw3f70BfDymHI6zDwABOC7fYcFcHeWPROzPbok/4oj0pt9AmiiqeRa3g4B+G7fRwHEUTVoEARgybzv9l0VwO4k+sOfVnRDQ8Yd/Q/d0ohxRBPr2VPUAM6Y992+qwJYL8mNfkU3mzmvAXYfXvDGj7EmUBNdBWC8IGCSNAtg99ElbQJRnycviyYQ3Y8+gEvmfbfvaA3AXHy9Ii0gGi8iE8A6Slv/TgugtST8/4Z9tu+oALIagN3wsybQycp0E6ip5BBAEPYdFYDQB4gPrlMBULdPIyZCAC3w3EEncHk6CeDuLBsFmrGu793Zg8tNxPa1FwBb+9B2IgwC6G7/Fx162DeIqwJoS5MAbugvxLR+IAYC6G5fSwCamvD/8tgWwNXD70kN0HoxHATQ3X5XAagk4f/lsS2AtAnU+oEYcwLo+pk84c2Q2P5wwzG2AFo/EGNOAApK94iBb0HD2jd3u0cNMGYNAAEYsg8B7LFf45WvlQwmAIt9AAgAAhicvQJo/UAMBKCk4qJvIIA99tVOqXaM4WoAi/MAEEAfKvbNfp4gBFBLU8kHFUCVIb8Bk9gXgIIenwcCqGNc/3dBAFqO1clB+wABDCiAJsb1/9EnCwYdvbfP2JezPWo3CLcGUGDsFqRi1Dv0+Pb7Xh5juF0DNJV8XGdXYewbUGHZQS3Yb3V5jAEBdMfYN6DClFtBAM30EEBdVAj+bPz0BaCFzjegwpRbQQDNmBcAezb+sPw78toCcGMeYFAGcqAaPLbvsgDqw6LE84Q+LtxRADaeBxibHysM50NeC0DPvB0BNIZFYbVANwHorwWqutGPxhxSz7ZWukEx40E1aOZnXQBamBZAc1iUu7Nl2ZyuAHr9QAYAxmgWQGNYlN1Jxf+1BdDrBzKGwa+1QFOz72gfoCksynZRGQPqUgNo43k94XnxfS9/bfGbBdAQFkXp/x37AP0+gh94Xnzfy99VAPVhUcjfqDoRoD8KJD4P0O8j+IHnxfe9/F0F0JZu8wBaTPUb8ATPy++cAABwAggABA0EAIIGAgBhM2JYFACmzgACKMaL2o8cOYBY6JYzH05QlP/2Ef2ZW88oin9zTIMzD415ARTrRuUVpJ4gFvpmjG/AMEX56cT97WetJu/tUxSf3nxG8B7zAijmjDvMHttHKHQaHtszivLfUO+58qwKkH1mBO8xL4Bi1VCH9UP2kQrtnXzLF93vy+9nDVCsG5VXkHqCVGgPBSCVny5g8Qux+LePHg7vPKgBSkypBnj7xDf/H78CQx+ghFRo70ovlf/2kWcdgKTiM8N3YYYYBXqcjwK1XkFqH6nQHgqgKL+P/i8Uf6QG9GDzAOy3BfydB0hd30MBFOV/eUzxTQTF5Sfl97IPAIBHQAAgaCAAEDQQAAgaCAAEDQQAggYCAEEDAYCggQBA0EAAIGggABA0EAAIGggABA0EAIIGAgBBIwlgd7JKf10PgECQBLCeJ5sHl5u5rcIAMDaiAEgFcHc2T2JUASAYSgKgv6MHAYBwEAVwd7aMZxe0IQRAIEh9gO0imifrg2tbhQFgbDAMCoIGAgBBkwuA/bh8CjrBIBhQA4CggQBA0JRHgdAEAkFRmge4O1vtTlbWSgPAyJRmgpP1MokxEQCCoSyADdYCGUS4lNvDi+S3H2wWBqgorwYlX9kGNYApZAFQDQDHkARAOgHJOprhazIFBOA8GAYdit1JNDsnArg7Y+Nq28OniyhapiNtS9uFAxkQwEDQheW7kweX9AmLhLQqeQ3Axtg26GU5g9wJxlIIY7DWD/F0tiVuzwXwO+1foS3kDtUaYPchvh0DsKGE7dHlJr2pLPM+QEzeoZvlDIomEOYBTJALgF/NvAlEnB81gDuoBIAmkAHYVSR/Yn635wJgd5cYNYAzKASAR8JMsDuZ804wuZzE44n30w4w9f3tAgJwBkUnGN+OEcRhUN7sWdMnTsm7b7HcyhkwDAqCBgIAQYNHIkHQSDXAhk/a2CoMAGNTXg6dYBgUhAQEAIJG1QTCWkUQDPIoEF2nEqELAMIBw6AgaCAAEDTCPMAKzwOA4EANAIIGAgBBI88DYAAUDMd2wRrXu5Oa9fbdY2iUz83ep2YaQzLJ8wAYBAXDwZ+D2C60BNDKco0A8pf19spNoPXe5wFuHx0fnybJ2yfH77/KNwDsZbv4hDYxNp+4LADCunEU6O2Xz5Pbz57fPztNXn6Q8A0A+9kuPv34Orn7+pwIQIqWtFJEUWINFx5EKT+LGjk8jyJiYHv0TUSft4uiebGzSMBP4k0gFpKJ/fhj5UewFTVA8yjoDXX3q9O3X71Ibj9/wTf82M9d6JbKSGqLWU/7Y9cJ4C9/I7797r8OrvNoSbQ5tHlwqY6ilAVRys5KjaRnbRdzGspwnqRvUpNiArY/6wOwx7GZvspNfDk2qObzkKQWuP3ilbAh+94haCQF4bJdrDarJF7GB9d5tKTFirVP1FGUsiBK2VncSLEvizyQ7SwnkARA1bE9Kt/dFatB93L/7HFy8z7zfL7hBwa7owyU2tt7eH3qX0qMmLV4Tp0A4nmyXhEBCNGSmKfWRVFKgyhlZyUJ36QS4RF86LlH2YMsPMGRqKPMGGn+VFpAXeYB3j55TLrC5RoAAnAiteMC2H3800eXVABFtCRZAFIUpSyIkrYA8gRKAWyP/llpAXVYCnH76JSqAH0AJ1M7LoDkH+dz6rZCtKSiCVSJopQFUZIEwFo3R5epAOjptAmUmSklkAVwd/bnSguofQ2Q+j9rBrFRoMfCKNBgF3Sg1E66cL/UrgtgE7GfIBKiJTFPVURRov7MgyjJAuCd4NSl5U5wnqDcCU5b95uo0gJqL4CXx5RT5TzAYBd0oNROunC/1K4LIIuOJ0RLStIeajmKUhpIiQVRkptA53zkk74Vh0Gpc+cJ8pNyS3Nee9QJAFEhJsGbErbLY5w+cVWrY0CGo0IMdkcZKLWT9/B+qV2uAYzQRwAbxVo3ow/FD3ZBB0rtpAu3S112eAigPqVyDVIXAbBhH9oXeO8F+gCWUwcnANN0iApxQx0/ueKDQacYBbKZGgLoSfuoEFcPvyc1wP13bPYL8wCWU0MAPenyRBj1eNL0oYOhPqwF+mMJ2+UxSnnUZ/KjQKbpKoDbz57TWsCHtUBlAYyY9fCpUQP0RBIAW029fx4gb/NcnfqwFmhSAuB+/Waf4zspgF9V9PPf3ogCYIuxNRAE4EMfAAIwk3WL1DWOoxTA666ua4Yuy6Gpx9O2z/3fX/iwFggCMJN1i9Q1juO6AKqPy6jJ5gEePvdiLZDXAqjxawjAFFIfYJqB0csC8GpUaN8oj1ejQK4LoHdoxMHuKL1S7xPAgFn3T224BignHqjgNf7hugB60+FyQgDNQAADAwFMWwB7Eg9U8Br/cFoALaJDs06wPw/EtBSAtj4ggPpz1DQKIJ2EYuvQVOv2h6JDDcAWwykDY3W4nBBAMwEJgD3I/iELBTHiYEx7AaSL4Rx6KH6fg/dkuILrEJgA6Ej8evbU7RogXQvkTmCsgQVg50Nl9B0GdWqUdL8AeCRPDwTgUGCsgQUwXMF1CKgGWORr8X0QgEOBsSCAaQig8HorAmCjQPpLIcLpA9QKAgKoP0fNlATgUGAsCAAC6E7RBNpoxwVybB4AAoAAutNlObRjjCyAcT9cOKNAlpjAUoiRBWCu4DqEUwNYQhbAJp+N7kSHy9nFj0b2+CkLoIyhgtf4h/MC0IsLlGIxMNakBdDbhyGAVnQOjWgxMJZdAZTp9KEhAN8FYDMwlm2Xl+n0ocMUwGslPbzXAF2bQDYDY9l2eRnDH27gYR+nRoVcoGsn2GZgLNsuL9PpQ4dZAyivn0s1QFssBcYa2cP30OlDQwA5fgtglD7AyB7dkk4fGgLI8VQAYwbGGtmj+9H3Y0MA49K5BhgxMNbILtyPvh8bAhgXo0shDDGyy5ql74e3OwpUxsTXWaC8YA4JQDc0Yi26d789d5SRXdYs3T92it0aoEyLgkvnqFFeMIcE0Hs1qO6XX7qgI7vouNR/7DYO38OHeyUeUQB5WBT6YrxlyfJEmOpn9FoAAVQpf1wjLjxJAfCwKDQySp/fQm1J39igJjrBI7ukXYy48GQFQFrhMfvF99GqgJ6d4E6L4UZ2Obv8WMKIC09WAPzWz+JjjUNPAehNhI3sc05RFkBL9vmw5vldBbAntVEBFGFR7s66P5PSlspaoFWrjoALgbGALzQLIH8QWPOJFDNIAlgf/HSy0v2lMIYLgbEsJfY39fBZ13iLngC2izEfTS8Ng9KR0Da/EyMvhrOAxVrHZoXn58fWEsC4/t9XAHIfwAJ+eoLPeQ8tgDQ8j51RoA1tArVqgcmL4Szgpyf4nPdQArCE3AmOW0eFkOYBLOCnJ/ic96QFAMCAQAAgaNwXQDxq/wMEhvMCaBMYC4C2uB4WpVVgLACmgK8CEEef6Io8K1nz8JBW8r5/xh5JtZA1/dQ0JtQ0kJpAcdoE8qATIK1CfTnqtyFkfTW2F8h534w5AC2v+x0160ERfiFG+wcyHECcgb7967+P6YhF1jw8pJW86StLWdM3Nle/mMXTYVBhDdL9d/81ahOoyJqHh7SS9+0X/zluE0ha9WV18t8sngpAWIX68vG4fYAiax4e0k7ej9LArBaynlQFIAsgfSbBhyaQeCt8Na4ASgtgR+0HSB97XD8UM5xOD6AcFqXFkwB2KVqk6ZjEYxtZM0YVgNAH+I+RBSB+7KsRL/fQePojedIq1HFrgCJrHh7SSt5UeKM2gYSsx+/8D4jRwFgjko5K89EYG/MANGseHtJK3uSVjSkIlvWEugCKeQAAAsLTTjAAZpCbQFgGBwLD004wAGbwtRMMgBHkPsARWv8gLPoGxwXAazxdCwSAGSAAEDRoAoGgqdYAI8ZmB8A2iiZQ3POHkgDwB5UA0AQCwaAQwBo1AAgGRSd4hj4ACAYMg4KggQBA0OB5ABA0nj4UD4AZ8DwACBo8DwCCBg/Fg6DBYjgQNBgGBUEDAYCggQBA0EAAIGggABA0EAAIGghgu2DDvruTmscghMmR7eEF+ac867cfdLKqJq6zp5M8e58Wi77TKgUQgQC2C/YAxHahJYA6Iy38uDN1AshfjlKKiQEBbBef0JjAm08ggBCZkADYYu5lGuJ68+Dy7ozNaW+PviGb9Bib7J49PbpM+ME02acfXyd3X58TAWRpDp+S81fp6ecPLov9rKHBjeVnpVkvpZyyg+l2ueVveOJVkm3pLmp9noj2yOvzKCIFSm3mJ6Q7iwLwk3gTiOW0pit6N1jWq8t0BMDWshLH3zBHXrK13eT1djEvju1OluQ19aj0IE23Xfzlb8S33/3XwXWRhhxSnJ56WmYsO4sZYa4t5JQdTLcRf8P7ENvFSthS6/S/ZG+R5spsiifQrZgH25/1AajRmOkVqxp1mY4AfqfunN2jDy+yX70nTlYcYzuJ62QHaTpywmaVxMv44FpKozg9tZ5nxM9KkkwAQk7ZwXSbvSH/ePzhfMtziak/C/bE5OUTKnmIAqCfCkGO9ZmOAIiPsCf6aRuI3K036cK+Jfeo9Bi76RP3yA7SI8SN4nmyXsWlNORP+fTsDp4ay85iRlLVFTllB4uT+Js1a80k2ZYKgOVyWLHHJccDNWXiYbLleRyJuswskOYPWkD6TEcAu5NZ6oTxwf+lGmC7uSulx3KPFjq8RAC7j3/66JIKQEyjOD1rAqXGlAIoH6wIgHUs+MBrxFpFrQWQ56EUwPbon2gB6TMdATA3iYlr7D6k3dx4lg+SF8eyxkQshH6hDYl/nM/pOVIaoXEi7M8cNq6pAcoHFQIoHr1LnZdZj5kWSk2go3Rf+QRFHoIA7s7+jBaQPhMSAL0tsjH9dcR6jsRNMi/JjhW92vQgTUd9bUNaQzHtUQpp2L1+Lp3OBcCNiQ7LWt5iTnUCYJoStluhEywJgHeCU5eWO8F5HuVOcCqsTYQWkD7TEQBtVc++TVvI1A/o2OEsa5lnx8Rxzey2vljxltO1lCbtUUqnF814akx0WCo6KafaGiDmocf4disOg4o1ynmxLxGHQediHvlJecnmvPYAmkxIALr4EPw301WntGgBtSAsAdDGgxfBX/oIYIMfu21BWAJI6ICmB/7fQwC1a5qAksAEAIAMBACCBgIAQQMBgKCBAEDQQAAgaCAAEDQQAAgaCAAEDQQAggYCAI6jvSxEiIqkv5QEAgATQXR6CAAEBwQApsL+aErCcR4micVmkp4doseyAFCZgQrdBPCzBjonRTqGupnuCmyPartGAPuiKYnH8zBJh+nDHuzxVB5jSYjoVPOoHAQA2zZt1wlgTzQl8XgpIJRwghAdqvYpOeMC+CXjDd82fXwIIHTbNQLYH01J/FOEYsoCuWbH8gBQ67oHoYz3Ad6UaToZPRCgQiOaUnFcDMVUEUDxeFxmoARqANi2aVtbAOVoSkL0JiFMUt4Eyo4JAaByAxAAbDtjW08AimhKspOnQZ9WSTnGUhbRKUsIAcC2W7b1BKCKplT8yYI+0ahI5RhLWQCozEALAbw8ppyy7XsvkrdPjt9/BQHAtmHTtmmuAW6Iz1+d0lf3z4gUPsj2N3wiCAC225i2TaMA3n75PLn/7jl7+dWL5PbzF/xAwyeCAGC7jWnbNAqA3vJJ04c2hG6/eMX0kCTvEBrSYBgU+ESTCzKHv/2M1QK0MZQKgNIgadQAsN3GtG2aBHCT93qvTosagNLwiSAA2G5j2jZNArh6nL86RR8AtgcxbZsGAaTdX1oN3P/9xf2zxxgFgm3zpm3TIADe4nl5fPzweYJ5ANgexLSSX5WY9XwOZoJh26ZttX+pBfC6h5/XgtWgwD2cF0CDpFEDwHYb00oggD1XrVsy2HbPttq/3BCAvAoOnWDYHsK0EjcEIK2Cw2I42B7EtBInBCCvgsNEGGwPYlqJEwKQV8FhMRwYD20BNP0mcn6sOElxer0LyqvgsBgOtgcx3U8ATVQFECsei99zD85XwWExHGwPYrqDAO6+Po+iZUyjnVDfjlnsN2EnCwO3YlEgyJ/Zxfbo31hUuPXsaZsagAsAfQDYdk0A9Kn3xZx6P/m3++gy2czFnbsPL/ixu7NVEh/872KZsNAR7ZpA8io4LIaD7UFMdxHA1xfsP3F07u7yTvqWyCLVAHf74pW2AEqr4DAPANtDmO4tANrgmV3IAljTVhEVwLvZfb+LABpo+EQQAGy3Md1fAATSwBF2sui4R/1rgG5gGBT0po0AaOteFgBzeBZRl/YBtkf/jRoAtl213V8AaXtHagJtougPf1rdneWjQBAAbDtqu4sAjAIBwLZN22r/ckMAt4/oUgiERoTtMAVA533pcgiERoTtAU0rcUIAN9Tdr04RGhG2wxQAhdQCCI0Ixue1kiFyanRBuv4BoRFhO9C4QKTfm4WGQ2hE2B7ItJI/Khl/FOg0e4nQiHupfl8atnUSaeLiNdExrcQJAXD/HyA0Yn7KL5GGSFRXreX5vW1r+CkE0M20EicEIPxEkuHQiBBAm0R9ym2IMAXQRMMnggAMC0BTJBBAN2ysBi2ORRpDpUNTvdAa53QzYyZvHcOe47wAGiTtXQ1QvdAa53QzgxqgaloJBLDnqrU8v5EJCEBTI51xVwCtwqKwZ+XLZ01cAIY815AZCKBqWonK/VvXAGUBsGflKz8Wry0AP0eBDHmuITM2BaBzTh2OCaBjWJR4TtKuy1WArgBMrgaFAHrlPZgAak9xTQCdw6JkMSM6CMDkTLCOAH4sI1019rfT165xCgRQPsU1AXQOi3J3tixnpSsA7dWgrcBqUKCijQBahEXZnVT8X9sFtVeDFtrWOGdCa4Fgu5vp/gJIdMOibBeVMaAuNYAuxqqJcfG02N6WW0kbAWiHRVH6f8c+gA6efiOeFtvbcitpVQPohkUhe6PqRID+KJC4GlQHT78RT4vtbbmVNAvAKN3mAXTw9BvxtNjelluJiwIAYDQgABA0EAAIGggAhI0jYVEAmDoDCaD1mJEb8DiovsEmaDy95LYZRgDy2lF/uDrdf4573FDR+nrJbTOMANrPGzsBj4PqGVcPvyeX2tNLbp1hBNB+5ZAT8Dio3kEd39NLbp1hBCCvHfUGHgfVdjFaQwXg6SW3DmqAMh72A1ADdAd9gDKeCsDnS26ToUaB2q4ddQIeB9V2MVpDHd/TS24dzAOI8DiovoF5gO5gJhgEDQQAggYCAEEDAYCggQBA0EAAIGggABA0EAAIGggABA0EAIIGAgBBAwGAoIEAQNBAACBoIAAQNBAACBoIAAQNBACCBgIAQQMBgKCBAEDQQAAgaCAAEDQQAAgaCAAEDQQAggYCAEEDAYCggQBA0EAA+mwPL/acsYlmlVP2pvrthxY5AMNAAPrsdc/dyaqfVQhgdCAAffa6Zyf/hQCsAgFIbA+fLqJolXoi+ZO+X275zvMoOrhOkruzKHpwmWyPvqGbJN0xT+hZ88JKnuqCHWEvhf3pTvZmyQ2kOdBjPIcsIRgMCEBiuyAOvnlwmQuAvY/4TvLm7mye0P/J5uB6u5inqbKd2Q1cTkVlRK0tVtJ+1l7iWdHE9H2WfZ4DT2jxikwdCECCOVvuslQAK2En38b03kz8NfdMtiPmssmtFKa2R5fV/b9fJ3lWckIhB54QDAYEIFE0feRt+uYodctNxFjmLfaYtouyswUr+c512jaS9pNkxMiMHY8fXEoJsxyyhGAwIAAJPQFQf89OpuwVAE0WFQ0r9md3MrvIjlcEwHPIEo57EYICApBoFgDfxjPBzylsh9gEqgogbdGI+5lq4pncBCrlkCUc7wIEBwQgUdye6cjMrCSAvBNMfJe7LqPSCS4JgN3gy3KiTr5dzC6of0sGyJ8shyyhxSsydSAAidxF6fjjpx+Wa4DztElOBylnF4Jn5qOYNTVA2tov9QFI+372LfH+dTSXDKTDQixBlhAMBgQAggYCAEEDAYCggQBA0EAAIGggABA0EAAIGggABA0EAIIGAgBB8/+6w70A13YssgAAAABJRU5ErkJggg==" /><!-- --></p>
+
+</div>
+<div id="degraded-data" class="section level2">
+<h2>Degraded data</h2>
+<p>This example uses 35 markers from the example set provided by the package.</p>
+<p>You can subet the 35, 42 or 50 first markers to reach a power of 0.90, 0.95, 0.99.</p>
+<p><br> <img src="data:image/png;base64,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" /><!-- --></p>
+<p>In this situation, the theoretical assignment power is low and there are missing parents. The distribution graphs do not give you more information about a new threshold value.</p>
+<p>Thus, the better option is to keep APIS results.</p>
+</div>
+</div>
+<div id="other-parameters-of-apis-function" class="section level1">
+<h1>Other parameters of APIS function</h1>
+<p>APIS function can handle 2 other parameters :</p>
+<ul>
+<li><p>exclusion.threshold : For exclusion procedure, the number of mismatches allowed by the user. Use default value for Mendelian transmission probability procedure.</p></li>
+<li><p>preselect.Parent : Use of a parent preselection function based on Mendelian incompatibilities.</p>
+<ul>
+<li><p>Default value : FALSE</p></li>
+<li><p>One interger (n) : Selection of n sires and n dams</p></li>
+<li><p>Two integers (n, m) : Selection of n sires and m dams</p></li>
+</ul></li>
+<li><p>nb.cores : Number of cores to use. By default, only 2 cores are used. If your computer has more cores, you can use the function detectCores() from “parallel” package (Warnings: Do not use all the available cores, if your computer has 8 cores, only use 6 or 7 for the analysis)</p></li>
+<li><p>verbose : Display information while the function is running. Give more details about the theoretical assignment rate, estimated number of offspring with missing parents and display progress bar.</p></li>
+</ul>
+<p>Use default value to get the most accurate results (except for the number of cores and verbose). If a value is specified, this will decrease computation time but can decrease assignment reliability.</p>
+</div>
+<div id="acknowlegments" class="section level1">
+<h1>Acknowlegments</h1>
+<p>This work was partially financially supported in the GeneSea project (n° R FEA 4700 16 FA 100 0005) by the French Government and the European Union (EMFF, European Maritime and Fisheries Fund) at the “Appels à projets Innovants” managed by the FranceAgrimer Office. The doctoral scholarship of Ronan Griot was partially supported by the ANRT (doctoral scholarship n° 2017/0731) and SYSAAF.</p>
+</div>
+<div id="annexe" class="section level1">
+<h1>Annexe</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">sessionInfo</span>(), <span class="dt">locale=</span><span class="ot">FALSE</span>)</code></pre></div>
+<pre><code>## R version 3.6.1 (2019-07-05)
+## Platform: x86_64-w64-mingw32/x64 (64-bit)
+## Running under: Windows 7 x64 (build 7601) Service Pack 1
+## 
+## Matrix products: default
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+## [1] APIS_0.1.0
+## 
+## loaded via a namespace (and not attached):
+##  [1] Rcpp_1.0.1        knitr_1.23        magrittr_1.5     
+##  [4] munsell_0.5.0     doParallel_1.0.14 colorspace_1.4-1 
+##  [7] rlang_0.4.0       foreach_1.4.4     stringr_1.4.0    
+## [10] tools_3.6.1       parallel_3.6.1    grid_3.6.1       
+## [13] gtable_0.3.0      xfun_0.8          htmltools_0.3.6  
+## [16] iterators_1.0.10  yaml_2.2.0        lazyeval_0.2.2   
+## [19] digest_0.6.20     tibble_2.1.3      crayon_1.3.4     
+## [22] gridExtra_2.3     ggplot2_3.2.0     codetools_0.2-16 
+## [25] evaluate_0.14     rmarkdown_1.14    labeling_0.3     
+## [28] stringi_1.4.3     compiler_3.6.1    pillar_1.4.2     
+## [31] scales_1.0.0      pkgconfig_2.0.2</code></pre>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

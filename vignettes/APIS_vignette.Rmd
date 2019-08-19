@@ -1,0 +1,201 @@
+---
+title: "Introduction to APIS"
+author: |
+  | Ronan Griot $^{1,2}$, François Allal $^{3}$, Marc Vandeputte $^{2,3}$
+  |
+  | $^{1}$SYSAAF, Station LPGP/INRA, Campus de Beaulieu, Rennes, France
+  | $^{2}$GABI, INRA, AgroParisTech, Université Paris-Saclay, France
+  | $^{3}$MARBEC, Univ. Montpellier, Ifremer, CNRS, IRD, Palavas-les-Flots, France
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to APIS}
+  %\VignetteEngine{knitr::rmarkdown}b 
+  \usepackage[utf8]{inputenc}
+---
+
+# Description
+This package includes all the functions to assign with APIS.
+Parentage assignment is widely used for farmed and natural populations. As most of the likelihood software are based on simulation, the estimation of the simulation parameters is a key point for assignment reliability. Among those parameters, the proportion of missing parent is one of the most important. To avoid estimation of missing parents, we developed APIS (Auto-Adaptive Parentage Inference Software), based on observed average Mendelian transmission probabilities.
+In this package, you will find all the functions to perform parentage assign.
+
+# Install and load the package
+```{r, message=F, warning=F}
+library(APIS)
+```
+
+\newpage
+
+# Formate your data
+APIS requires matrices of characters as inputs.
+Each matrix has individuals as rows, markers as columns. The individual labels are set as rownames. Marker labels are set as colnames. Each cell is the genotype of one marker, coded "All1/All2". For example "A/A", "A/B", "B/B" for bi-allelic markers and "NA/NA" for missing value. For multi-allelic markers, use the generic coding "All1/All2".
+
+```{r}
+data("APIS_offspring")
+data("APIS_sire")
+data("APIS_dam")
+
+head(APIS_offspring[,1:10])
+rownames(APIS_offspring[1:6,])
+```
+
+\newpage
+
+# Prepare the inputs
+APIS main function requires 4 inputs :
+
+  * off.genotype = matrix of offspring genotypes coded as explained above
+  
+  * sire.genotype = matrix of sires genotypes coded as explained above
+  
+  * dam.genotype = matrix of dams genotypes coded as explained above
+  
+  * error = accepted assignment error rate (What is the maximum error rate I accept in my assignment results ?)
+
+```{r}
+head(APIS_offspring[,1:10])
+head(APIS_sire[,1:10])
+head(APIS_dam[,1:10])
+error <- 0.05 #I accept 5% of errors in the results
+```
+
+# Running the assignment
+The main function to perform parentage assignment with APIS the "APIS()" function.
+Use the function as below, with default parameters for exclusion threshold and preselection of parents to maximize the reliability.
+
+```{r, eval = F}
+result <- APIS(off.genotype = APIS_offspring,
+               sire.genotype = APIS_sire,
+               dam.genotype = APIS_dam,
+               error = error)
+```
+
+# Analyse the results
+APIS gives you 3 different outputs :
+  
+  * pedigree
+
+Pedigree header  | Description
+---------------- | ----------------
+*off*              | Offspring ID    
+*sire*             | Sire ID
+*dam*              | Dam ID
+  
+
+  * log containing Mendelian transmission probabilities, mismatches and deltas for the first 3 parent pairs
+  
+Log header      | Description
+--------------- | -----------------------------------------------------------------------------
+*offspring*       | offspring ID
+*mrk_genotype*    | number of markers genotyped
+*sire1*           | ID of the most likely sire
+*dam1*            | ID of the most likely dam
+*mismatch1*       | number of mismatches for the most likely parent pair (sire1, dam1)
+*mendel1*         | average Mendelian transmission probability of the most likely parent pair                      (sire1, dam1)
+*sire2*           | ID of the second most likely sire
+*dam2*            | ID of the second most likely dam
+*mismatch2*       | number of mismatches for the second most likely parent pair (sire2, dam2)
+*mendel2*         | average Mendelian transmission probability of the second most likely parent                     pair (sire2, dam2)
+*delta_Pmendel12* | mendel1 - mendel2
+*sire3*           | ID of the third most likely sire
+*dam3*            | ID of the third most likely dam
+*mismatch3*       | number of mismatches for the third most likely parent pair (sire3, dam3)
+*mendel3*         | average Mendelian transmission probability of the third most likely parent                     pair (sire3, dam3)
+*delta_Pmendel23* | mendel2 - mendel3
+
+  
+  * graphs of the distributions of deltas, Mendelian transmission probabilities and mismatches
+
+According to the graphs, you can change the threshold to improve your assignment.
+
+If you want to set up your threshold on Mendelian probabilities, use :
+
+```{r, eval = F}
+new.result <- personalThreshold(APIS.result = result,
+                                method = 'Pmendel',
+                                threshold = 0.7)
+```
+
+If you want to set up your threshold on mismatches, use :
+
+```{r, eval = F}
+new.result <- personalThreshold(APIS.result = result,
+                                method = 'exclusion',
+                                threshold = 1)
+```
+\newpage
+
+# Examples
+## Full data
+This example uses the 100 markers data sets provided by the package.
+
+<br>
+```{r full_data, echo = F, message = F, warning = F, fig.width=8, fig.height=4}
+result <- APIS(off.genotype = APIS_offspring,
+               sire.genotype = APIS_sire,
+               dam.genotype = APIS_dam,
+               error = 0.05,
+               verbose = FALSE)
+```
+<br>
+
+
+When I look at the mismatch distributions, I prefer to use exclusion and allow for 1 mismatches (Figure 2).
+
+<br>
+```{r, eval = T, fig.width=8, fig.height=4}
+new.result <- personalThreshold(APIS.result = result,
+                                method = 'exclusion',
+                                threshold = 1,
+                                verbose = FALSE)
+```
+
+\newpage
+
+## Degraded data
+This example uses 35 markers from the example set provided by the package.
+
+You can subet the 35, 42 or 50 first markers to reach a power of 0.90, 0.95, 0.99.
+
+<br>
+```{r degraded_data, echo = F, message = F, warning = F, results = "hide", fig.width=8, fig.height=4}
+result <- APIS(off.genotype = APIS_offspring[, 1:35],
+               sire.genotype = APIS_sire[sample(c(1:nrow(APIS_sire)), 10), 1:35],
+               dam.genotype = APIS_dam[, 1:35],
+               error = 0.05,
+               verbose = FALSE)
+```
+
+In this situation, the theoretical assignment power is low and there are missing parents.
+The distribution graphs do not give you more information about a new threshold value.
+
+Thus, the better option is to keep APIS results.
+
+
+# Other parameters of APIS function
+APIS function can handle 2 other parameters :
+
+  * exclusion.threshold : For exclusion procedure, the number of mismatches allowed by the user. Use default value for Mendelian transmission probability procedure.
+  
+  * preselect.Parent : Use of a parent preselection function based on Mendelian incompatibilities.
+  
+    + Default value       : FALSE
+    
+    + One interger (n)    : Selection of n sires and n dams
+    
+    + Two integers (n, m) : Selection of n sires and m dams
+    
+  * nb.cores : Number of cores to use. By default, only 2 cores are used. If your computer has more cores, you can use the function detectCores() from "parallel" package (Warnings: Do not use all the available cores, if your computer has 8 cores, only use 6 or 7 for the analysis)
+    
+  * verbose : Display information while the function is running. Give more details about the theoretical assignment rate, estimated number of offspring with missing parents and display progress bar.
+  
+  Use default value to get the most accurate results (except for the number of cores and verbose). If a value is specified, this will decrease computation time but can decrease assignment reliability.
+
+# Acknowlegments
+This work was partially financially supported in the GeneSea project (n° R FEA 4700 16 FA 100 0005) by the French Government and the European Union (EMFF, European Maritime and Fisheries Fund) at the "Appels à projets Innovants" managed by the FranceAgrimer Office. The doctoral scholarship of Ronan Griot was partially supported by the ANRT (doctoral scholarship n° 2017/0731) and SYSAAF.
+
+# Annexe 
+
+```{r info}
+print(sessionInfo(), locale=FALSE)
+```
