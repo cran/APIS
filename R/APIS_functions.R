@@ -158,6 +158,7 @@ APIS <- function(off.genotype, sire.genotype, dam.genotype, error = 0,
 #' @import doParallel
 #' @importFrom "stats" "median" "quantile"
 #' @importFrom "utils" "setTxtProgressBar" "txtProgressBar" "flush.console"
+#' @importFrom "methods" "is"
 #' @examples
 #' data("APIS_offspring")
 #' data("APIS_sire")
@@ -307,16 +308,16 @@ assignmentFortran <- function(offspring, sire, dam, thresh = ncol(offspring),
 
   if (verbose) { cat('\n') }
 
-  if (class(recode.off) != "matrix") {
+  if (!is(recode.off, "matrix")) {
     recode.off <- t(as.matrix(recode.off))
   } else {
   }
-  if (class(recode.sire) != "matrix") {
+  if (!is(recode.sire, "matrix")) {
     recode.sire <- t(as.matrix(recode.sire))
   } else {
   }
 
-  if (class(recode.dam) != "matrix") {
+  if (!is(recode.dam, "matrix")) {
     recode.dam <- t(as.matrix(recode.dam))
   } else {
   }
