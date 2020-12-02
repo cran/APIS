@@ -217,7 +217,10 @@ assignmentFortran <- function(offspring, sire, dam, thresh = ncol(offspring),
   }
 
   variant <- unique(unlist(strsplit(as.vector(rbind(offspring, sire, dam)), '/')))
-  variant <- variant[-which(variant == "NA")]
+  NA_variant <- which(variant == "NA")
+  if (length(NA_variant) > 0) {
+    variant <- variant[-which(variant == "NA")]
+  }
 
   variant.corres <- data.frame(variant = as.character(variant),
                                recode = c(1:length(variant)))

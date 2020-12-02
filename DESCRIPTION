@@ -2,7 +2,7 @@ Package: APIS
 Type: Package
 Title: Auto-Adaptive Parentage Inference Software Tolerant to Missing
         Parents
-Version: 1.0.0
+Version: 1.0.1
 Author: Ronan Griot, François Allal, Romain Morvezen, Sophie Brard-Fudulea, Pierrick Haffray, Florence Phocas and Marc Vandeputte
 Maintainer: Ronan Griot <ronan.griot@gmail.com>
 Description: Parentage assignment package.
@@ -17,6 +17,6 @@ Imports: foreach, parallel, doParallel, ggplot2, gridExtra, methods
 NeedsCompilation: yes
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
-Packaged: 2019-12-12 13:02:25 UTC; rgriot
+Packaged: 2020-12-02 15:13:23 UTC; rgriot
 Repository: CRAN
-Date/Publication: 2019-12-12 13:20:02 UTC
+Date/Publication: 2020-12-02 15:40:03 UTC
