@@ -4,7 +4,9 @@
 \name{APIS_sire}
 \alias{APIS_sire}
 \title{Example sire genotypes}
-\format{A matrix with 39 rows (one row = one sire) and 100 columns (one column = one marker)}
+\format{
+A matrix with 39 rows (one row = one sire) and 100 columns (one column = one marker)
+}
 \usage{
 APIS_sire
 }

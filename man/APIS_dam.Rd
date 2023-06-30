@@ -4,7 +4,9 @@
 \name{APIS_dam}
 \alias{APIS_dam}
 \title{Example dam genotypes}
-\format{A matrix with 14 rows (one row = one dam) and 100 columns (one column = one marker)}
+\format{
+A matrix with 14 rows (one row = one dam) and 100 columns (one column = one marker)
+}
 \usage{
 APIS_dam
 }

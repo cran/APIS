@@ -2,21 +2,62 @@ Package: APIS
 Type: Package
 Title: Auto-Adaptive Parentage Inference Software Tolerant to Missing
         Parents
-Version: 1.0.1
-Author: Ronan Griot, François Allal, Romain Morvezen, Sophie Brard-Fudulea, Pierrick Haffray, Florence Phocas and Marc Vandeputte
-Maintainer: Ronan Griot <ronan.griot@gmail.com>
+Version: 2.0.1
+Authors@R: 
+  c(person(given = "Julien",
+           family = "Roche",
+           role = c("aut", "cre"),
+           email = "jjm.roche@gmail.com"),
+    person(given = "Ronan",
+           family = "Griot",
+           role = "aut"),
+    person(given = "Mathieu",
+           family = "Besson",
+           role = "aut"),
+    person(given = "François",
+           family = "Allal",
+           role = "aut"),
+    person(given = "Marc",
+           family = "Vandeputte",
+           role = "aut"),
+    person(given = "Jonathan",
+           family = "D'Ambrosio",
+           role = "aut"),
+    person(given = "Romain",
+           family = "Morvezin",
+           role = "aut"),
+    person(given = "Florence",
+           family = "Phocas",
+           role = "aut"),
+    person(given = "Sophie",
+           family = "Brard-Fudulea",
+           role = "aut"),
+    person(given = "Pierrick",
+           family = "Haffray",
+           role = "aut"))
 Description: Parentage assignment package.
-    Parentage assignment is performed based on observed average Mendelian transmission probability distributions.
-    The main function of this package is the function APIS(), which is the parentage assignment function.
+    Parentage assignment is performed based on observed average Mendelian transmission probability distributions or Exclusion.
+    The main functions of this package are the function APIS_2n(), APIS_3n and launch_APIShiny(), which perform parentage assignment.
 License: GPL
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.1
-Depends: R (>= 3.4.0)
-Imports: foreach, parallel, doParallel, ggplot2, gridExtra, methods
+RoxygenNote: 7.2.3
+Imports: cowplot, data.table, doParallel, dplyr, DT, foreach, ggplot2,
+        gridExtra, htmltools, methods, plotly, rlang, shiny,
+        shinythemes
+Depends: R (>= 3.5.0), shinyBS
 NeedsCompilation: yes
-Suggests: knitr, rmarkdown
-VignetteBuilder: knitr
-Packaged: 2020-12-02 15:13:23 UTC; rgriot
+Packaged: 2023-06-30 12:58:45 UTC; Proprietaire
+Author: Julien Roche [aut, cre],
+  Ronan Griot [aut],
+  Mathieu Besson [aut],
+  François Allal [aut],
+  Marc Vandeputte [aut],
+  Jonathan D'Ambrosio [aut],
+  Romain Morvezin [aut],
+  Florence Phocas [aut],
+  Sophie Brard-Fudulea [aut],
+  Pierrick Haffray [aut]
+Maintainer: Julien Roche <jjm.roche@gmail.com>
 Repository: CRAN
-Date/Publication: 2020-12-02 15:40:03 UTC
+Date/Publication: 2023-06-30 15:40:02 UTC
