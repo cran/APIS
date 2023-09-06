@@ -1,4 +1,4 @@
-025bc7ab9bf3efba65a3465d970abfb5 *DESCRIPTION
+448960f852af0a664a249c945df1c96e *DESCRIPTION
 e297dbef55268967d68d0e52baddf298 *NAMESPACE
 2e665db44090adcc14a8b15718a0e3ae *R/APIS_dam.R
 04a7e9668b037f8e129b422de0b06fbf *R/APIS_offspring.R
@@ -23,6 +23,7 @@ cf7b0d9bb346ab23604bd2e0f447d63b *R/functions_personal_threshold.R
 f593de652196e0fcaa5029bba4e60c19 *R/functions_prepare_for_assignment.R
 c60f06a2cd908e9cb4bbc46cddfa8048 *R/functions_print.R
 7ee980daad8ef15ded38ef5d15d9c490 *R/functions_probabilities.R
+41c1290b2b4a2ff765bba9a5b86da4e3 *R/zzz.R
 a454a6d55dfd65e600d7c6d2ab06d578 *data/APIS_dam.rda
 9466760cf9bb04b3bdb3c8bba723371c *data/APIS_offspring.rda
 2ff8a72bf567a1b5a345894d838c2b71 *data/APIS_offspring3n.rda
@@ -49,5 +50,5 @@ e5fa4e4ac0e4b956a21ad5736faf50b3 *man/import_from_vcf.Rd
 af8e6058a188ed0e701ba8090d0d409e *man/plot_mismatches.Rd
 8e167c404e6fe2e4ffa31f7879779c61 *man/plot_probabilities.Rd
 9dbb7ebe6e73b815b3534adf188d2a55 *man/simulate_offspring.Rd
-d7ae0860658370fd8a09c1c67d142aae *src/APIS_init_Recom.c
-e5f3b8b2b0a8244b690f75bd0982da0d *src/calculate_likelihood.c
+a0ef16bceab3ef029fa2fe39b175002d *src/APIS_init_Recom.c
+3d1111185ca3aa2278bcf521c995f7df *src/calculate_likelihood.c

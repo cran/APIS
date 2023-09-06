@@ -2,7 +2,7 @@ Package: APIS
 Type: Package
 Title: Auto-Adaptive Parentage Inference Software Tolerant to Missing
         Parents
-Version: 2.0.1
+Version: 2.0.2
 Authors@R: 
   c(person(given = "Julien",
            family = "Roche",
@@ -47,7 +47,7 @@ Imports: cowplot, data.table, doParallel, dplyr, DT, foreach, ggplot2,
         shinythemes
 Depends: R (>= 3.5.0), shinyBS
 NeedsCompilation: yes
-Packaged: 2023-06-30 12:58:45 UTC; Proprietaire
+Packaged: 2023-09-06 08:04:16 UTC; jlroche
 Author: Julien Roche [aut, cre],
   Ronan Griot [aut],
   Mathieu Besson [aut],
@@ -60,4 +60,4 @@ Author: Julien Roche [aut, cre],
   Pierrick Haffray [aut]
 Maintainer: Julien Roche <jjm.roche@gmail.com>
 Repository: CRAN
-Date/Publication: 2023-06-30 15:40:02 UTC
+Date/Publication: 2023-09-06 08:40:09 UTC
