@@ -28,14 +28,14 @@ estimate_mendel_threshold <- function(log_file, error) {
   missing_range <- estimate_missing_parents(log_file = log_file)
 
   # If the number of individuals with missing parents is lower than the error
-  if ((missing_range[2]) <= round(error * nrow(log_file))) {
+  if ((missing_range[1]) <= round(error * nrow(log_file))) {
     # All the individuals are assigned to their most likely parent pair
 
     threshold_delta = min(log_file$delta_1_2)
   } else {
     sorted_delta_2_3 <- sort(log_file$delta_2_3, decreasing = TRUE)
 
-    threshold_delta <- quantile(sorted_delta_2_3[1:(nrow(log_file) - (missing_range[1]))], probs = (1 - error), type = 5, na.rm = TRUE)
+    threshold_delta <- quantile(sorted_delta_2_3[1:(nrow(log_file) - (missing_range[2]))], probs = (1 - error), type = 5, na.rm = TRUE)
   }
 
   return(threshold_delta)

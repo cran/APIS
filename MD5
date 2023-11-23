@@ -1,14 +1,14 @@
-448960f852af0a664a249c945df1c96e *DESCRIPTION
+5085ca62183b8186d3a396604e411eb2 *DESCRIPTION
 e297dbef55268967d68d0e52baddf298 *NAMESPACE
 2e665db44090adcc14a8b15718a0e3ae *R/APIS_dam.R
 04a7e9668b037f8e129b422de0b06fbf *R/APIS_offspring.R
 1cde7245c87cff656f7ed09fff797b07 *R/APIS_offspring3n.R
 8449b26c91943a99a480263864bbd2fa *R/APIS_sire.R
-25f9a48a39f2360be98669d4dbcf3db5 *R/App_APIS_Shiny.R
+20c1844b65f24703f3df29879bd2b505 *R/App_APIS_Shiny.R
 bb44dfefbfb7e8d9023a13a50f872baf *R/function_formating.R
 f6aa52991b661e293e1b18aee064872d *R/function_logfile.R
 ca2e26e87c290f538de7c136b8452eaf *R/function_simulate_offspring.R
-3746967ca28c71dffb92224d30d73a30 *R/function_threshold_error.R
+31e22c56243477e2171de4539a079913 *R/function_threshold_error.R
 33bc95ce3fe0bad2a7eeb3c2ed82c0d3 *R/functions_APIS_2n.R
 6be443feddc2c21e4c65fc11cdc87d57 *R/functions_APIS_3n.R
 b07d3e34d97ed51ffce574757a17bdb3 *R/functions_allele_frequency.R

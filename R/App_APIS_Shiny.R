@@ -138,7 +138,21 @@ launch_APIShiny = function(){
                                                                 label = div("Choose the method for assignment",
                                                                             bsButton(inputId = "q6",label = "",icon = icon("question"), style = "info", size = "extra-small")),
                                                                 choices = c("exclusion","likelihood"),selected = "likelihood"),
-                                                    sliderInput(inputId = "acceptError",label = "Error rate allowed",min = 0,max = 0.25,value = 0.05,step = 0.01),
+                                                    conditionalPanel(condition = "input.method=='exclusion'",
+                                                                     radioButtons(inputId = "exclu_thres",
+                                                                                  label = div("Choose threshold method for exclusion",
+                                                                                              bsButton(inputId = "q61",label = "",icon = icon("question"), style = "info", size = "extra-small")),
+                                                                                  choices = c("Mismatch number","Error rate"),
+                                                                                  selected = "Error rate")
+                                                                     ),
+                                                    conditionalPanel(condition = "input.method=='likelihood' || (input.method=='exclusion' && input.exclu_thres=='Error rate')",
+                                                                     sliderInput(inputId = "acceptError",label = "Error rate allowed",min = 0,max = 0.25,value = 0.05,step = 0.005)
+                                                                     ),
+                                                    conditionalPanel(condition = "input.method=='exclusion' && input.exclu_thres=='Mismatch number'",
+                                                                     uiOutput(outputId = "acceptMismatch0")
+                                                                     # sliderInput(inputId = "acceptMismatch",label = "Number of mismatch allowed",min = 0,max = 50,value = 5,step = 1)
+                                                                     ),
+                                                    # sliderInput(inputId = "acceptError",label = "Error rate allowed",min = 0,max = 0.25,value = 0.05,step = 0.01),
                                                     textInput(inputId = "save_name",
                                                               label = div("Name of the file to save (click the '?' for help)",
                                                                           bsButton(inputId = "q8",label = "",icon = icon("question"), style = "info", size = "extra-small"))),
@@ -177,7 +191,7 @@ launch_APIShiny = function(){
              ),
       ),
       column(5,
-             h5(div("Warnings : Make sure yout app is launched on the desired directory. If not, quit the app and use setwd() !",
+             h5(div("Warnings : Make sure your app is launched on the desired directory. If not, quit the app and use setwd() !",
                     style="color:red;font-weight:bold;margin-bottom:3em")),
              conditionalPanel(condition = "input.nav==0",
                               h5(div("Warnings : this step is only required if you did not use the genotyping shiny application AND works only for diploid genotype. Else the format is already good OR you should use the genotyping application for your triploids.",
@@ -198,7 +212,7 @@ launch_APIShiny = function(){
                               textOutput(outputId = "WarningMarker"),
                               tags$head(tags$style("#WarningMarker{color: red;font-size: 20px;}")),
                               conditionalPanel(condition = "output.APIS_launched == 1",
-                                               h4("Plot result from APIS : Select accepted error or missmatch threshold"),
+                                               h4("Plot result from APIS : Select accepted error or mismatch threshold"),
                                                plotOutput(outputId = "graph_res"))),
              conditionalPanel(condition = "input.nav==2",
                               dataTableOutput(outputId = "head_fac"),
@@ -239,6 +253,7 @@ launch_APIShiny = function(){
     bsTooltip(id = "q53",title = "Select SNP if markers in your dataset are SNP and microsat if it is microsatellite markers"),
     bsTooltip(id = "q54",title = "Select SNP if markers in your dataset are SNP and microsat if it is microsatellite markers"),
     bsTooltip(id = "q6",title = "APIS can use two differents method for assignment : likelihood and exclusion.<br/>It selects the best pair of parents based on differents criteria<br/>See the documentation of APIS for more details"),
+    bsTooltip(id = "q61",title = "APIS can use two threshold for exclusion method.<br/>Error rate: automatically estimate the threshold given the accepted error rate.<br/>Mismatch number: select the number of maximum mismatch."),
     bsTooltip(id = "q7",title = "APIS uses paralellization to reduce running time. Select the number of core<br/>Max is number of core of the computer -1 so you can t block your computer<br/>Max-1 recommended (default)"),
     bsTooltip(id = "q8",title = "Type the name you want for saving ;<br/>Will automatically be added : _MethodSelected.Rdata for the file that contains the result of APIS and the list of markers selected ; and _ped.txt for the pedigree result",trigger = "click"),
     bsTooltip(id = "q18",title = "Type the name you want for saving plots<br/>Will automatically be added an extension to identify each plots<br/>The same name will be use if you want an output for INFAQUA"),
@@ -465,9 +480,9 @@ launch_APIShiny = function(){
     # output$exclusionErrorUI = renderUI({
     #   if (length(dataset$snp_kept)>0){
     #     sliderInput(inputId = "exclusionError",
-    #                 label = div("Choose the threshold for missmatch",
+    #                 label = div("Choose the threshold for mismatch",
     #                             tipify(el = bsButton(inputId = "4",label = "",icon = icon("question"), style = "info", size = "extra-small"),
-    #                                    title = "Choose the number of missmatch allowed for the assignment for the best pair of parents.")),
+    #                                    title = "Choose the number of mismatch allowed for the assignment for the best pair of parents.")),
     #                 min = 0,max = max(10,floor(0.2*length(dataset$snp_kept))),value = 0,step = 1)
     #   }
     # })
@@ -483,7 +498,11 @@ launch_APIShiny = function(){
           p2=graphApis$p2 + geom_vline(xintercept=THRESHOLD)
         } else if (input$method=='exclusion'){
           p2=graphApis$p2
-          THRESHOLD=estimate_exclusion_threshold(dataset$apis_exclusion,as.numeric(input$acceptError))
+          if (input$exclu_thres=='Error rate'){
+            THRESHOLD=estimate_exclusion_threshold(dataset$apis_exclusion,as.numeric(input$acceptError))
+          } else {
+            THRESHOLD=as.numeric(input$acceptMismatch)
+          }
           p3=graphApis$p3 + geom_vline(xintercept=THRESHOLD+0.5)
         }
         graphApis$tot = plot_grid(plot_grid(p1,p2),p3,nrow = 2)
@@ -503,6 +522,13 @@ launch_APIShiny = function(){
         actionButton(inputId = "launch1",label = "Launch APIS assignment")
       }
     })
+
+    output$acceptMismatch0 = renderUI({
+      if (input$exclu_thres=='Mismatch number' & input$method=='exclusion' & !is.null(dataset$apis_exclusion)){
+        sliderInput(inputId = "acceptMismatch",label = "Number of mismatch allowed",min = 0,max = max(dataset$apis_exclusion$mismatch_2,na.rm = TRUE)+5,value = 5,step = 1)
+      }
+    })
+
     ##### Launch APIS #####
     observeEvent(input$launch1,{
       if (length(dataset$off)>0 & length(dataset$par)>0 & (length(dataset$nbMarker)==1 | !is.null(input$snp_in$datapath)) & !is.null(input$save_name)){
@@ -684,14 +710,22 @@ launch_APIShiny = function(){
       if (length(dataset$apis_likelihood)>0){
         write(x = "----Saving APIS assignment----",file = dataset$path_log,append = TRUE)
         write(x = paste0("Method : ",input$method),file = dataset$path_log,append = TRUE)
+        mismatch_error=FALSE
         if (input$method=='exclusion'){
-          THRESHOLD=as.numeric(input$acceptError)
-          estiThreshold=estimate_exclusion_threshold(dataset$apis_exclusion,as.numeric(input$acceptError))
+          if (input$exclu_thres=='Error rate'){
+            THRESHOLD=as.numeric(input$acceptError)
+            estiThreshold=estimate_exclusion_threshold(dataset$apis_exclusion,as.numeric(input$acceptError))
+            write(x = paste0("Error accepted : ",as.numeric(input$acceptError*100),"%"),file = dataset$path_log,append = TRUE)
+            write(x = paste0("Mismatch threshold : ",estiThreshold),file = dataset$path_log,append = TRUE)
+          } else {
+            mismatch_error=TRUE
+            THRESHOLD=as.numeric(input$acceptMismatch)
+            estiThreshold=THRESHOLD
+            write(x = paste0("Mismatch threshold : ",estiThreshold),file = dataset$path_log,append = TRUE)
+          }
           ped = dataset$apis_exclusion %>% select(.data$offspring,.data$sire_1,.data$dam_1) %>% rename(sire=.data$sire_1,dam=.data$dam_1)
           ind_na=unique(which(dataset$apis_exclusion$mismatch_1>estiThreshold | dataset$apis_exclusion$mismatch_1==dataset$apis_exclusion$mismatch_2))
           ped[ind_na,2:3]=c(NA,NA)
-          write(x = paste0("Error accepted : ",as.numeric(input$acceptError*100),"%"),file = dataset$path_log,append = TRUE)
-          write(x = paste0("Missmatch threshold : ",estiThreshold),file = dataset$path_log,append = TRUE)
           log_APIS = dataset$apis_exclusion
         } else if (input$method=='likelihood'){
           THRESHOLD=as.numeric(input$acceptError)
@@ -709,7 +743,7 @@ launch_APIShiny = function(){
         }
         snp_kept = dataset$snp_kept
         df_par = dataset$sexe
-        save(log_APIS,ped,snp_kept,df_par,THRESHOLD,estiThreshold,file = paste0("./Results_APIS/",input$save_name,"_",input$method,".Rdata"))
+        save(log_APIS,ped,snp_kept,df_par,THRESHOLD,estiThreshold,mismatch_error,file = paste0("./Results_APIS/",input$save_name,"_",input$method,".Rdata"))
         ggsave(graphApis$tot,filename = paste0("./Results_APIS/",input$save_name,"_",input$method,".png"),width = 7,height = 7)
         write.table(x = ped,file = paste0("./Results_APIS/",input$save_name,"_ped.txt"),quote = FALSE,row.names = FALSE)
         write.table(x = log_APIS,file = paste0("./Results_APIS/",input$save_name,"_logfile.csv"),sep=";",quote = FALSE,row.names = FALSE)
@@ -1044,7 +1078,7 @@ launch_APIShiny = function(){
     ##### Launch Verification #####
     observeEvent(input$launch_verif,{
       if (!is.null(input$data_res)){
-        load(file = input$data_res$datapath) # log_APIS , ped , snp_kept & df_par
+        load(file = input$data_res$datapath) # log_APIS , ped , snp_kept , df_par , THRESHOLD , estiThreshold , mismatch_error
         verif$data = log_APIS
         verif$ped = ped
         verif$threshold = estiThreshold
@@ -1201,7 +1235,9 @@ launch_APIShiny = function(){
           verif$out1=paste0("There is/are ",n_na," no assigned offspring(s) (",round((n_na/n_tot)*100,2),"%)\nand among assigned offspring(s) ",n_pb," have parents that are not in the same factorial (",round((n_pb/n_tot)*100,2),"%).")
           verif$out2=paste0("Real assignment rate : ",n_tot-n_pb-n_na,"/",n_tot,"=",round((n_tot-n_pb-n_na)*100/n_tot,2),"%.")
           verif$out3=paste0("The assignment was done using ",length(snp_kept)," markers.")
-          verif$out4=paste0("The maximum theoretical error rate for this assignment is ",round(THRESHOLD,2)*100,"%.")
+          if (!mismatch_error){
+            verif$out4=paste0("The maximum theoretical error rate for this assignment is ",round(THRESHOLD,2)*100,"%.")
+          }
           verif$tab=tab_assign3[tab_assign3$offspring %in% indiv_pb,]
         } else {
           to_plot$ggheat=ggplot(data = heatmap,aes(x = .data$Sire,y = .data$Dam,fill = .data$n))+
@@ -1221,7 +1257,9 @@ launch_APIShiny = function(){
           verif$out1=paste0("There is/are ",n_na," no assigned offspring(s) (",round((n_na/n_tot)*100,2),"%).")
           verif$out2=paste0("Real assignment rate : ",n_tot-n_na,"/",n_tot,"=",round((n_tot-n_na)*100/n_tot,2),"%.")
           verif$out3=paste0("The assignment was done using ",length(snp_kept)," markers.")
-          verif$out4=paste0("The maximum theoretical error rate for this assignment is ",round(THRESHOLD,2)*100,"%.")
+          if (!mismatch_error){
+            verif$out4=paste0("The maximum theoretical error rate for this assignment is ",round(THRESHOLD,2)*100,"%.")
+          }
           verif$tab=verif$ped[which(is.na(verif$ped$sire)),]
         }
         verif$displayed = data.frame() # reinitialisation so that it does not overcharge the user experience
