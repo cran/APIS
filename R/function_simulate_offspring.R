@@ -89,9 +89,9 @@ simulate_offspring = function(sire_genotype, dam_genotype,
       which_allele_sire2 = c()
       for (l in 1:n_marker){
         if (which_allele_sire[l]==1){
-          id2=sample(1:2,size=1,replace=F,prob=c(recombination_rate,1-recombination_rate))
-        } else {
           id2=sample(1:2,size=1,replace=F,prob=c(1-recombination_rate,recombination_rate))
+        } else {
+          id2=sample(1:2,size=1,replace=F,prob=c(recombination_rate,1-recombination_rate))
         }
         which_allele_sire2 = c(which_allele_sire2,id2)
       }
@@ -100,9 +100,9 @@ simulate_offspring = function(sire_genotype, dam_genotype,
       which_allele_dam2 = c()
       for (l in 1:n_marker){
         if (which_allele_dam[l]==1){
-          id2=sample(1:2,size=1,replace=F,prob=c(recombination_rate,1-recombination_rate))
-        } else {
           id2=sample(1:2,size=1,replace=F,prob=c(1-recombination_rate,recombination_rate))
+        } else {
+          id2=sample(1:2,size=1,replace=F,prob=c(recombination_rate,1-recombination_rate))
         }
         which_allele_dam2 = c(which_allele_dam2,id2)
       }

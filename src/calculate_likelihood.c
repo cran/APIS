@@ -384,36 +384,36 @@ void get_individual_mendelian_probability_3n(int* offspring_genotype, int* sire_
 
         // AA - AD - DD - missing
         double AAA_probability_table[4][4] = {
-          {1,   0.5*r,    e, (1-r)*fA*fA+r*fA},
-          {0.5, 0.25*r,   e, 0.5*((1-r)*fA*fA + r*fA)},
+          {1,   0.5*(1-r),    e, r*fA*fA+(1-r)*fA},
+          {0.5, 0.25*(1-r),   e, 0.5*(r*fA*fA + (1-r)*fA)},
           {e,   e,        e, e},
-          {fA,  0.5*r*fA,  e, (1-r)*fA*fA*fA+r*fA*fA}
+          {fA,  0.5*(1-r)*fA,  e, r*fA*fA*fA+(1-r)*fA*fA}
         };
 
         // AA - AB - BB - AD - BD - DD - missing
         double ABB_probability_table[7][7] = {
-          {e, 0.5*r,            1,   e, 0.5*r,      e, r*fA*fB+fB*fB+r*fB*fC},
-          {e, 0.25*r + 0.5*(1-r), 0.5, e, 0.25*r,  e, (1-0.5*r)*fA*fB+0.5*fB*fB+0.5*r*fB*fC},
-          {e, 1-r,                    e,   e, e,              e, 2*fA*fB*(1-r)},
-          {e, 0.25*r,           0.5, e, 0.25*r,     e, 0.5*r*fA*fB+0.5*r*fB*fC+0.5*fB*fB},
-          {e, 0.5*(1-r),                e,   e, e,              e, fA*fB*(1-r)},
+          {e, 0.5*(1-r),            1,   e, 0.5*(1-r),      e, (1-r)*fA*fB+fB*fB+(1-r)*fB*fC},
+          {e, 0.25*(1-r) + 0.5*r, 0.5, e, 0.25*(1-r),  e, (1-0.5*(1-r))*fA*fB+0.5*fB*fB+0.5*(1-r)*fB*fC},
+          {e, r,                    e,   e, e,              e, 2*fA*fB*r},
+          {e, 0.25*(1-r),           0.5, e, 0.25*(1-r),     e, 0.5*(1-r)*fA*fB+0.5*(1-r)*fB*fC+0.5*fB*fB},
+          {e, 0.5*r,                e,   e, e,              e, fA*fB*r},
           {e, e,                    e,   e, e,              e, e},
-          {e, 0.5*r*fA+(1-r)*fB,  fA,  e, 0.5*fA*r,   e, fA*(r*fA*fB+fB*fB+r*fB*fC)+fB*fB*fA*2*(1-r)}
+          {e, 0.5*(1-r)*fA+r*fB,  fA,  e, 0.5*fA*(1-r),   e, fA*((1-r)*fA*fB+fB*fB+(1-r)*fB*fC)+fB*fB*fA*2*r}
         };
 
         // AA	AB	BB	AC	BC	CC	AD	BD	CD	DD	missing
         double ABC_probability_table[11][11] = {
-          {e, e,      e, e,       1-r,      e, e, e, e, e, 2*fB*fC*(1-r)},
-          {e, e,      e, 0.5*(1-r),   0.5*(1-r),  e, e, e, e, e, fB*fC*(1-r)+fA*fC*(1-r)},
-          {e, e,      e, 1-r,       e,      e, e, e, e, e, 2*fA*fC*(1-r)},
-          {e, 0.5*(1-r),  e, e ,      0.5*(1-r),  e, e, e, e, e, fA*fB*(1-r)+fB*fC*(1-r)},
-          {e, 0.5*(1-r),  e, 0.5*(1-r),   e,      e, e, e, e, e, fA*fB*(1-r)+fA*fC*(1-r)},
-          {e, 1-r,      e, e,       e,      e, e, e, e, e, 2*fA*fB*(1-r)},
-          {e, e,      e, e,       0.5*(1-r),  e, e, e, e, e, fB*fC*(1-r)},
-          {e, e,      e, 0.5*(1-r),   e,      e, e, e, e, e, fA*fC*(1-r)},
-          {e, 0.5*(1-r),  e, e,       e,      e, e, e, e, e, fB*fA*(1-r)},
+          {e, e,      e, e,       r,      e, e, e, e, e, 2*fB*fC*r},
+          {e, e,      e, 0.5*r,   0.5*r,  e, e, e, e, e, fB*fC*r+fA*fC*r},
+          {e, e,      e, r,       e,      e, e, e, e, e, 2*fA*fC*r},
+          {e, 0.5*r,  e, e ,      0.5*r,  e, e, e, e, e, fA*fB*r+fB*fC*r},
+          {e, 0.5*r,  e, 0.5*r,   e,      e, e, e, e, e, fA*fB*r+fA*fC*r},
+          {e, r,      e, e,       e,      e, e, e, e, e, 2*fA*fB*r},
+          {e, e,      e, e,       0.5*r,  e, e, e, e, e, fB*fC*r},
+          {e, e,      e, 0.5*r,   e,      e, e, e, e, e, fA*fC*r},
+          {e, 0.5*r,  e, e,       e,      e, e, e, e, e, fB*fA*r},
           {e, e,      e, e,       e,      e, e, e, e, e, e},
-          {e, fC*0.5*(1-r),   e, fB*0.5*(1-r),    fA*0.5*(1-r),   e, e, e, e, e, 6*fA*fB*fC*(1-r)}
+          {e, fC*0.5*r,   e, fB*0.5*r,    fA*0.5*r,   e, e, e, e, e, 6*fA*fB*fC*r}
         };
 
         // AA - AD - DD - missing
