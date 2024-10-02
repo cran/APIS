@@ -129,7 +129,7 @@ get_probabilities_parallel_3n <- function(offspring_genotype, sire_genotype, dam
 #' data("APIS_sire")
 #' data("APIS_dam")
 #
-#' assignment <- APIS_3n(offspring_genotype = APIS_offspring3n[1:35,1:50],
+#' assignment <- APIS_3n(offspring_genotype = APIS_offspring3n[1:20,1:50],
 #'                       sire_genotype = APIS_sire[ ,1:50],
 #'                       dam_genotype = APIS_dam[ ,1:50],
 #'                       simulation_if_small = FALSE)

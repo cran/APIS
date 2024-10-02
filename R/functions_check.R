@@ -35,6 +35,12 @@ check_matrices_format <- function(genotype_matrix, verbose = FALSE) {
   if (!is.character(genotype_matrix)) {
     stop("The genotype matrices should be filled with 'character' values : check the genotype format and use the function storage.mode() ")
   }
+  
+  sep_verif=grepl(pattern = "/",x = genotype_matrix)
+  if (!all(sep_verif)){
+    warning(paste0("Unusual genotype found: ",paste(unique(genotype_matrix[!sep_verif]),collapse = ", ")))
+    warning("The genotypes must be separated by '/': 'A/A' or 'NA/NA' for diploids and 'A/A/A' or 'NA/NA/NA' for triploids. At least one genotype was missing '/'. See the supplied datasets in APIS for reference.")
+  }
 
   if (verbose) {
     cat(paste0(deparse(substitute(genotype_matrix)), " matrix format : OK"))

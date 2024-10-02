@@ -42,8 +42,12 @@ launch_APIShiny = function(){
                                    fileInput(inputId = "to_format",
                                              label = div("File of genotype to format for APIS (.ped from AXAS or .vcf)",
                                                          bsButton(inputId = "qx1",label = "",icon = icon("question"), style = "info", size = "extra-small")),
-                                             accept = c(".txt",".ped",".vcf")),
+                                             accept = c(".txt",".ped",".vcf",".csv")),
                                    conditionalPanel(condition = "output.colFormat",
+                                                    selectInput(inputId = 'header_file_format',
+                                                                label = div("Is there a header in the file to format ?",
+                                                                            bsButton(inputId = "q1110",label = "",icon = icon("question"), style = "info", size = "extra-small")),
+                                                                choices = c('Yes','No'),selected = 'No'),
                                                     uiOutput(outputId = 'uiNoColSN'),
                                                     uiOutput(outputId = 'uiNoColGeno'),
                                                     selectInput(inputId = "what",
@@ -59,7 +63,7 @@ launch_APIShiny = function(){
                                                     fileInput(inputId = "list_par",
                                                               label = div("File with the name of the Parents",
                                                                           bsButton(inputId = "qx3",label = "",icon = icon("question"), style = "info", size = "extra-small")),
-                                                              accept = c(".txt")),
+                                                              accept = c(".txt",".csv")),
                                                     selectInput(inputId = 'header_list_par',
                                                                 label = div("Is there a header in the file with the parent names ?",
                                                                             bsButton(inputId = "q111",label = "",icon = icon("question"), style = "info", size = "extra-small")),
@@ -68,7 +72,7 @@ launch_APIShiny = function(){
                                    fileInput(inputId = "snp_map",
                                              label = div("File with the marker names (ex : .map from AXAS) (optional)",
                                                          bsButton(inputId = "qx4",label = "",icon = icon("question"), style = "info", size = "extra-small")),
-                                             accept = c(".txt",".map")),
+                                             accept = c(".txt",".map",".csv")),
                                    conditionalPanel(condition = "output.colMap",
                                                     selectInput(inputId = 'header_snp_map',
                                                                 label = div("Is there a header in the file with the marker names ?",
@@ -83,9 +87,6 @@ launch_APIShiny = function(){
                           ),
                           tabPanel("APIS",value = 1,
                                    conditionalPanel(condition = "output.APIS_launched == 0",
-                                                    # checkboxInput(inputId = "try_recom",value = FALSE,
-                                                    #               label = div("Find the most suitable recombinaison rate",
-                                                    #                           bsButton(inputId = "q13",label = "",icon = icon("question"), style = "info", size = "extra-small"))),
                                                     checkboxInput(inputId = "both_parents_in",value = TRUE,
                                                                   label = div("Male and female parents are in the same dataset",
                                                                               bsButton(inputId = "q131",label = "",icon = icon("question"), style = "info", size = "extra-small"))),
@@ -105,10 +106,14 @@ launch_APIShiny = function(){
                                                                      fileInput(inputId = "sexe_par",
                                                                                label = div("File (.txt) with the sex of each parents",
                                                                                            bsButton(inputId = "q3",label = "",icon = icon("question"), style = "info", size = "extra-small")),
-                                                                               accept = ".txt"),
+                                                                               accept = c(".txt",".csv")),
                                                                      conditionalPanel(condition = "output.dta_sex_load",
-                                                                                      uiOutput(outputId = "uiChangeSN")),
-                                                                     conditionalPanel(condition = "output.dta_sex_load",
+                                                                                      selectInput(inputId = 'header_sexe_par',
+                                                                                                  label = div("Is there a header in the file with the marker names ?",
+                                                                                                              bsButton(inputId = "q11111",label = "",icon = icon("question"), style = "info", size = "extra-small")),
+                                                                                                  choices = c('Yes','No'),selected = 'Yes'),
+                                                                                      uiOutput(outputId = "uiChangeSN"),
+                                                                                      # conditionalPanel(condition = "output.dta_sex_load",
                                                                                       uiOutput(outputId = "uiChangeSe"))),
                                                     conditionalPanel(condition = "input.both_parents_in!=true",
                                                                      fileInput(inputId = "data_par1",
@@ -144,14 +149,14 @@ launch_APIShiny = function(){
                                                                                               bsButton(inputId = "q61",label = "",icon = icon("question"), style = "info", size = "extra-small")),
                                                                                   choices = c("Mismatch number","Error rate"),
                                                                                   selected = "Error rate")
-                                                                     ),
+                                                    ),
                                                     conditionalPanel(condition = "input.method=='likelihood' || (input.method=='exclusion' && input.exclu_thres=='Error rate')",
                                                                      sliderInput(inputId = "acceptError",label = "Error rate allowed",min = 0,max = 0.25,value = 0.05,step = 0.005)
-                                                                     ),
+                                                    ),
                                                     conditionalPanel(condition = "input.method=='exclusion' && input.exclu_thres=='Mismatch number'",
                                                                      uiOutput(outputId = "acceptMismatch0")
                                                                      # sliderInput(inputId = "acceptMismatch",label = "Number of mismatch allowed",min = 0,max = 50,value = 5,step = 1)
-                                                                     ),
+                                                    ),
                                                     # sliderInput(inputId = "acceptError",label = "Error rate allowed",min = 0,max = 0.25,value = 0.05,step = 0.01),
                                                     textInput(inputId = "save_name",
                                                               label = div("Name of the file to save (click the '?' for help)",
@@ -167,7 +172,13 @@ launch_APIShiny = function(){
                                    fileInput(inputId = "tab_accou",
                                              label = div("The file with the mating plan",
                                                          bsButton(inputId = "q10",label = "",icon = icon("question"), style = "info", size = "extra-small")),
-                                             accept = c(".txt")),
+                                             accept = c(".txt",".csv")),
+                                   conditionalPanel(condition = "output.dta_fac_load",
+                                                    selectInput(inputId = 'header_tab_accou',
+                                                                label = div("Is there a header in the file ?",
+                                                                            bsButton(inputId = "q11100",label = "",icon = icon("question"), style = "info", size = "extra-small")),
+                                                                choices = c('Yes','No'),selected = 'No'),
+                                   ),
                                    conditionalPanel(condition = "output.dta_fac_load",
                                                     uiOutput(outputId = "uiChangeSN2")),
                                    conditionalPanel(condition = "output.dta_fac_load",
@@ -178,15 +189,7 @@ launch_APIShiny = function(){
                                    actionButton(inputId = "launch_verif",label = "Launch the verification"),
                                    conditionalPanel(condition = "input.launch_verif>0",
                                                     actionButton(inputId = "SavePlot",label = "Save output"))
-                                   # fileInput(inputId = "id_off",
-                                   #           label = div("A .txt file with ID and barecode of offspring for INFAQUA",
-                                   #                       bsButton(inputId = "q11",label = "",icon = icon("question"), style = "info", size = "extra-small")),
-                                   #           accept = c(".txt")),
-                                   # conditionalPanel(condition = "output.changeSN3",
-                                   #                  uiOutput(outputId = "uiChangeSN3")),
-                                   # conditionalPanel(condition = "output.changeID",
-                                   #                  uiOutput(outputId = "uiChangeID")),
-                                   # actionButton(inputId = "SaveInf",label = "Save output for INFAQUA")
+                                   
                           )
              ),
       ),
@@ -248,7 +251,10 @@ launch_APIShiny = function(){
     bsTooltip(id = "q2.1",title = "File created by the genotyping application (or during formating phase) with extension _genoAPIS.Rdata<br/>File with only the male (sire) parents.<br/>Can also be a .txt file with marker as columns and individuals as rows with genotype format as A/A."),
     bsTooltip(id = "q2.2",title = "File created by the genotyping application (or during formating phase) with extension _genoAPIS.Rdata<br/>File with only the female (dam) parents.<br/>Can also be a .txt file with marker as columns and individuals as rows with genotype format as A/A."),
     bsTooltip(id = "q111",title = "If the loaded file has a header, select Yes. If it is a single column file with no header, select No."),
+    bsTooltip(id = "q1110",title = "If the loaded file has a header, select Yes. If it is a single column file with no header, select No."),
+    bsTooltip(id = "q11100",title = "If the loaded file has a header, select Yes. If it is a single column file with no header, select No."),
     bsTooltip(id = "q1111",title = "If the loaded file has a header, select Yes. If it is a single column file with no header, select No."),
+    bsTooltip(id = "q11111",title = "If the loaded file has a header, select Yes. If it is a single column file with no header, select No."),
     bsTooltip(id = "q52",title = "Select 2 if individuals are diploids and 3 if they are triploids"),
     bsTooltip(id = "q53",title = "Select SNP if markers in your dataset are SNP and microsat if it is microsatellite markers"),
     bsTooltip(id = "q54",title = "Select SNP if markers in your dataset are SNP and microsat if it is microsatellite markers"),
@@ -258,12 +264,9 @@ launch_APIShiny = function(){
     bsTooltip(id = "q8",title = "Type the name you want for saving ;<br/>Will automatically be added : _MethodSelected.Rdata for the file that contains the result of APIS and the list of markers selected ; and _ped.txt for the pedigree result",trigger = "click"),
     bsTooltip(id = "q18",title = "Type the name you want for saving plots<br/>Will automatically be added an extension to identify each plots<br/>The same name will be use if you want an output for INFAQUA"),
     bsTooltip(id = "q9",title = "Select the file finishing by _MethodSelected.Rdata created in the APIS part"),
-    bsTooltip(id = "q10",title = "A file containing at least two rows : SampleName (or CodeBarre) & Facto like so :<br/>SampleName  Facto<br/>Name1  Facto1<br/>Name2  Facto2<br/>Name3  Facto3<br/>...  ...<br/>The SampleName (or CodeBarre) variable is the name of the sample as in the genotyping application.<br/>The facto variable means factorial. It is used to verify whether parents of an idividual have met or not."),
-    bsTooltip(id = "q11",title = "A file containing at least two rows : ID & SampleName (or CodeBarre) like so :<br/>ID  SampleName<br/>Id1  Name1<br/>Id2  Name2<br/>Id3  Name3<br/>...  ...<br/>The SampleName (or CodeBarre) variable is the name of the sample as in the genotyping application.<br/>The ID variable referes to the animal idenfier."),
-    bsTooltip(id = "q12",title = "Select the number of the column corresponding to marker names.<br/>Ignored if .txt file with a single column."),
-    bsTooltip(id = "q13",title = "Use this to find an optimum for the recombinaison rate (default 0.5).<br/>If selected, will perform multiple APIS assignment with different recombinaison rate to find an optimum.<br/>This operation takes more time but can improve the assignment.")
+    bsTooltip(id = "q10",title = "A file containing at least two rows : SampleName (or CodeBarre) & Facto like so :<br/>SampleName  Facto<br/>Name1  Facto1<br/>Name2  Facto2<br/>Name3  Facto3<br/>...  ...<br/>The SampleName (or CodeBarre) variable is the name of the sample as in the genotyping application.<br/>The facto variable means factorial. It is used to verify whether parents of an idividual have met or not.")
   )
-
+  
   # Define server logic
   server <- function(input, output,session) {
     ##### Event from APIS #####
@@ -273,7 +276,7 @@ launch_APIShiny = function(){
                              apis_likelihood=data.frame(),apis_exclusion=data.frame(),
                              dta_sex_load=FALSE,tmp_sexe=data.frame(),choices=NULL,displayed=data.frame(),
                              path_log='')
-
+    
     #---Load dataset of offspring and stock the data
     observeEvent(input$data_off,{
       if (!is.null(input$data_off$datapath)){
@@ -298,15 +301,15 @@ launch_APIShiny = function(){
       if (!is.null(input$data_par$datapath)){
         if (grepl(pattern = ".txt",x = input$data_par$name)){
           dataset$par = read.table(file=input$data_par$datapath)
-
+          
           allele_freq = as.data.frame(get_allele_frequencies(dataset$par,ploidy_level = 2))
-
+          
           if (!is.null(allele_freq$Freq_NA)){
             dataset$snp_par = data.frame(MarkerName=rownames(allele_freq),toKeep=TRUE,CR=1-allele_freq$Freq_NA)
           } else {
             dataset$snp_par = data.frame(MarkerName=rownames(allele_freq),toKeep=TRUE,CR=1)
           }
-
+          
         } else if (grepl(pattern = ".Rdata",x = input$data_par$name)){
           tmp=load(file = input$data_par$datapath)
           eval(parse(text = paste0("dataset$par = ",tmp[1])))
@@ -316,39 +319,39 @@ launch_APIShiny = function(){
         }
       }
     })
-
+    
     observeEvent(c(input$data_par1,input$data_par2),{
       if (!is.null(input$data_par1$datapath) & !is.null(input$data_par2$datapath)){
         if (grepl(pattern = ".txt",x = input$data_par1$name)){
           tmp1.1 = read.table(file=input$data_par1$datapath)
-
+          
           allele_freq1 = as.data.frame(get_allele_frequencies(tmp1.1,ploidy_level = 2))
-
+          
           if (!is.null(allele_freq1$Freq_NA)){
             tmp1.2 = data.frame(MarkerName=rownames(allele_freq1),toKeep=TRUE,CR=1-allele_freq1$Freq_NA)
           } else {
             tmp1.2 = data.frame(MarkerName=rownames(allele_freq1),toKeep=TRUE,CR=1)
           }
-
-        } else if (grepl(pattern = ".Rdata",x = input$data_par$name)){
+          
+        } else if (grepl(pattern = ".Rdata",x = input$data_par1$name)){
           tmp=load(file = input$data_par1$datapath)
           eval(parse(text = paste0("tmp1.1 = ",tmp[1])))
           eval(parse(text = paste0("tmp1.2 = ",tmp[2])))
         } else {
           stop("File extension not supported !")
         }
-
+        
         if (grepl(pattern = ".txt",x = input$data_par2$name)){
           tmp2.1 = read.table(file=input$data_par2$datapath)
-
+          
           allele_freq2 = as.data.frame(get_allele_frequencies(tmp2.1,ploidy_level = 2))
-
+          
           if (!is.null(allele_freq2$Freq_NA)){
             tmp2.2 = data.frame(MarkerName=rownames(allele_freq2),toKeep=TRUE,CR=1-allele_freq2$Freq_NA)
           } else {
             tmp2.2 = data.frame(MarkerName=rownames(allele_freq2),toKeep=TRUE,CR=1)
           }
-
+          
         } else if (grepl(pattern = ".Rdata",x = input$data_par2$name)){
           tmp=load(file = input$data_par2$datapath)
           eval(parse(text = paste0("tmp2.1 = ",tmp[1])))
@@ -356,40 +359,41 @@ launch_APIShiny = function(){
         } else {
           stop("File extension not supported !")
         }
-
+        
         marker_shared = tmp1.2$MarkerName[which(tmp1.2$MarkerName %in% tmp2.2$MarkerName)]
-
+        
         dataset$snp_par = data.frame(MarkerName=marker_shared,
                                      CR=(tmp1.2$CR[tmp1.2$MarkerName %in% marker_shared]*nrow(tmp1.1)+tmp2.2$CR[tmp2.2$MarkerName %in% marker_shared]*nrow(tmp2.1))/(nrow(tmp1.1)+nrow(tmp2.1)),
                                      toKeep=TRUE)
-
+        
         dataset$par = rbind(tmp1.1 %>% select(all_of(marker_shared)),tmp2.1 %>% select(all_of(marker_shared)))
-
+        
         dataset$sexe = rbind(data.frame(SampleName=rownames(tmp1.1),Sexe=1),data.frame(SampleName=rownames(tmp2.1),Sexe=2))
       }
     })
-
+    
     #---Load dataset of parents with their sexe and stock the data
     # Verify that 'SampleName' and 'Sexe' is a variable : if not, detection to change the colname of the samples name to match with SampleName
-    observeEvent(input$sexe_par,{
-      if (!is.null(input$sexe_par$datapath)){
+    observeEvent(c(input$sexe_par,input$header_sexe_par),{
+      if (!is.null(input$sexe_par$datapath) & ! is.null(input$header_sexe_par)){
         dataset$dta_sex_load=TRUE
-        dataset$sexe=read.table(file = input$sexe_par$datapath,header=T)
-        if (length(dataset$sexe)[1]==1){
+        header=ifelse(input$header_sexe_par=='Yes',TRUE,FALSE)
+        dataset$sexe=read.table(file = input$sexe_par$datapath,header=header)
+        if (ncol(dataset$sexe)==1){
           delim=find_delim(readLines(con=input$sexe_par$datapath,n = 1))
-          dataset$sexe=read.table(file = input$sexe_par$datapath,header=T,sep=delim)
+          dataset$sexe=read.table(file = input$sexe_par$datapath,header=header,sep=delim)
         }
         dataset$choices = colnames(dataset$sexe)
         dataset$tmp_sexe=dataset$sexe
       }
     })
-
+    
     #--- Change SampleName and Sex column -----
     output$dta_sex_load <- reactive({
       dataset$dta_sex_load
     })
     outputOptions(output, 'dta_sex_load', suspendWhenHidden=FALSE)
-
+    
     #---SelectInput with the names of the different columns : select the sample name
     output$uiChangeSN = renderUI({
       if (dataset$dta_sex_load){
@@ -400,7 +404,7 @@ launch_APIShiny = function(){
                     choices = dataset$choices,selected = dataset$choices[1],multiple = FALSE)
       }
     })
-
+    
     #---SelectInput with the names of the different columns : select the sample name
     output$uiChangeSe = renderUI({
       if (dataset$dta_sex_load){
@@ -418,7 +422,7 @@ launch_APIShiny = function(){
         dataset$displayed = head(dataset$sexe)
         colnames(dataset$sexe)[which(colnames(dataset$sexe)==input$newSN)]='SampleName'
         colnames(dataset$sexe)[which(colnames(dataset$sexe)==input$newSe)]='Sexe'
-
+        
         colnames(dataset$displayed)[which(colnames(dataset$displayed)==input$newSN)]=paste0(input$newSN,' (SampleName)')
         colnames(dataset$displayed)[which(colnames(dataset$displayed)==input$newSe)]=paste0(input$newSe,' (Sex)')
       }
@@ -428,7 +432,7 @@ launch_APIShiny = function(){
       datatable(head(dataset$displayed),rownames = FALSE,options = list(dom = 't'),
                 caption = htmltools::tags$caption( style = 'caption-side: top; text-align: center; color:black;  font-size:150% ;','Head data sex'))
     })
-
+    
     #---Find the SNPs in common between parents and offspring => keeps only good snp !!
     observeEvent(c(dataset$snp_off,dataset$snp_par),{
       if (length(dataset$snp_off)>0 & length(dataset$snp_par)>0){
@@ -475,7 +479,7 @@ launch_APIShiny = function(){
     output$WarningMarker = renderText({
       dataset$AlertNbMarker
     })
-
+    
     # #---RenderUI for exclusion threshold : to control max value in function of dataset length
     # output$exclusionErrorUI = renderUI({
     #   if (length(dataset$snp_kept)>0){
@@ -493,7 +497,7 @@ launch_APIShiny = function(){
         p1=graphApis$p1
         if (input$method=='likelihood'){
           p3=graphApis$p3
-
+          
           THRESHOLD=estimate_mendel_threshold(dataset$apis_likelihood,as.numeric(input$acceptError))
           p2=graphApis$p2 + geom_vline(xintercept=THRESHOLD)
         } else if (input$method=='exclusion'){
@@ -509,26 +513,26 @@ launch_APIShiny = function(){
         graphApis$tot
       }
     })
-
+    
     #---To specify that APIS has been launched and that the rest of the ui can be displayed
     output$APIS_launched <- reactive({
       dataset$APIS_launched
     })
     outputOptions(output, 'APIS_launched', suspendWhenHidden=FALSE)
-
+    
     #---To launch APIS by beeing sure that there is everything required
     output$go_apis = renderUI({
       if (!is.null(input$data_off) & (!is.null(input$data_par) | (!is.null(input$data_par1) & !is.null(input$data_par2))) & (length(dataset$nbMarker)==1 | !is.null(input$snp_in$datapath)) & !is.null(input$save_name)){
         actionButton(inputId = "launch1",label = "Launch APIS assignment")
       }
     })
-
+    
     output$acceptMismatch0 = renderUI({
       if (input$exclu_thres=='Mismatch number' & input$method=='exclusion' & !is.null(dataset$apis_exclusion)){
         sliderInput(inputId = "acceptMismatch",label = "Number of mismatch allowed",min = 0,max = max(dataset$apis_exclusion$mismatch_2,na.rm = TRUE)+5,value = 5,step = 1)
       }
     })
-
+    
     ##### Launch APIS #####
     observeEvent(input$launch1,{
       if (length(dataset$off)>0 & length(dataset$par)>0 & (length(dataset$nbMarker)==1 | !is.null(input$snp_in$datapath)) & !is.null(input$save_name)){
@@ -556,7 +560,7 @@ launch_APIShiny = function(){
           write(x = paste0("Parents file sire : ",input$data_par1$name),file = path_log,append = TRUE)
           write(x = paste0("Parents file dam : ",input$data_par2$name),file = path_log,append = TRUE)
         }
-
+        
         if (!is.null(input$snp_in$datapath)){
           snp_kept = read.table(file = input$snp_in$datapath,header = FALSE)
           snp_kept = snp_kept[,1]
@@ -570,7 +574,7 @@ launch_APIShiny = function(){
               arrange(desc(.data$MAF),desc(.data$CR)) %>%
               filter(!is.na(.data$MAF),!is.na(.data$CR)) %>%
               select(.data$MarkerName)
-
+            
           } else { # input$markerType2=='microsat'
             snp_kept = dataset$snp_off %>%
               select(.data$MarkerName) %>%
@@ -588,7 +592,10 @@ launch_APIShiny = function(){
         }
         write(x = paste0("Marker type : ",input$markerType2),file = path_log,append = TRUE)
         write(x = paste0("Number of snp kept : ",length(snp_kept)),file = path_log,append = TRUE)
-
+        
+        # New 2.0.5
+        dataset$sexe = dataset$sexe %>% select(.data$SampleName,.data$Sexe) %>% distinct()
+        
         offspring = dataset$off %>%
           as.data.frame() %>%
           select(all_of(snp_kept)) %>%
@@ -603,11 +610,11 @@ launch_APIShiny = function(){
           select(all_of(snp_kept))
         dam = dam0[which(toupper(rownames(dam0)) %in% toupper(dataset$sexe$SampleName[dataset$sexe$Sexe==2 | dataset$sexe$Sexe==4])),] %>%
           as.matrix()
-
+        
         par_nam_tot=toupper(rownames(dataset$par))
         par_nam_rest=toupper(c(rownames(sire),rownames(dam)))
         par_nam_list=toupper(dataset$sexe$SampleName)
-
+        
         no_sex = which(! par_nam_tot %in% par_nam_rest)
         sex_but_no = which(! par_nam_list %in% par_nam_rest)
         if (length(no_sex)>0){
@@ -692,10 +699,10 @@ launch_APIShiny = function(){
           scale_color_manual(values = c("1"="#56B4E9","2"="#D55E00"))+
           theme_bw()+
           labs(x = "Delta of mendelian probability",y="Count",fill="Assignment",col="Assignment")
-
+        
         tmp = data.frame(Value = c(dataset$apis_exclusion$mismatch_1,dataset$apis_exclusion$mismatch_2),
                          Which = as.factor(rep(c(1,2),each=length(dataset$apis_exclusion$mismatch_1))))
-
+        
         graphApis$p3=ggplot(data=tmp,aes(x = .data$Value,color = .data$Which,fill = .data$Which))+
           geom_histogram(alpha = 0.25,position = "identity")+
           scale_fill_manual(values = c("1"="#56B4E9","2"="#D55E00"))+
@@ -705,7 +712,7 @@ launch_APIShiny = function(){
         print("-----End APIS-----")
       }
     })
-
+    
     observeEvent(input$SaveAPIS,{
       if (length(dataset$apis_likelihood)>0){
         write(x = "----Saving APIS assignment----",file = dataset$path_log,append = TRUE)
@@ -750,14 +757,15 @@ launch_APIShiny = function(){
         print("-----APIS files saved ! -----")
       }
     })
-
+    
     ##### Event from Verification #####
     verif = reactiveValues(out1=NULL,out2=NULL,out3=NULL,out4=NULL,tab=data.frame(),
                            threshold=NULL,
+                           dta_accou_load=FALSE,
                            sentence_dam1=NULL,sentence_sire1=NULL,sentence_dam2=NULL,sentence_sire2=NULL,
                            data=data.frame(),accou=data.frame(),ped=data.frame(),accou_tmp=data.frame(),
                            dta_fac_load=FALSE,choices=NULL,displayed=data.frame())
-
+    
     #---Summary of the assignment
     output$txt1 = renderText({
       verif$out1
@@ -794,28 +802,29 @@ launch_APIShiny = function(){
                   caption = htmltools::tags$caption( style = 'caption-side: top; text-align: center; color:black;  font-size:150% ;','Out-of-plan assignment'))
       }
     })
-
+    
     #---Load dataset of parents with their sexe and stock the data
     # Verify that 'SampleName' is a variable : if not, detection to change the colname of the samples name to match with SampleName
-    observeEvent(input$tab_accou,{
-      if (!is.null(input$tab_accou$datapath)){
+    observeEvent(c(input$tab_accou,input$header_tab_accou),{
+      if (!is.null(input$tab_accou$datapath) & ! is.null(input$header_tab_accou)){
         verif$dta_fac_load=TRUE
-        verif$accou=read.table(file = input$tab_accou$datapath,header=T)
+        header=ifelse(input$header_tab_accou=='Yes',TRUE,FALSE)
+        verif$accou=read.table(file = input$tab_accou$datapath,header=header)
         if (length(verif$accou)[1]==1){
           delim = find_delim(readLines(con=input$tab_accou$datapath,n=1))
-          verif$accou=read.table(file = input$tab_accou$datapath,header=T,sep=delim)
+          verif$accou=read.table(file = input$tab_accou$datapath,header=header,sep=delim)
         }
         verif$choices = colnames(verif$accou)
         verif$tmp_accou=verif$accou
       }
     })
-
+    
     #--- Change SampleName and Facto when data loaded VERIF -----
     output$dta_fac_load <- reactive({
       verif$dta_fac_load
     })
     outputOptions(output, 'dta_fac_load', suspendWhenHidden=FALSE)
-
+    
     #--- SelectInput with the names of the different columns : select the sample name
     output$uiChangeSN2 = renderUI({
       if (verif$dta_fac_load){
@@ -826,7 +835,7 @@ launch_APIShiny = function(){
                     choices = verif$choices,selected = verif$choices[1],multiple = FALSE)
       }
     })
-
+    
     #--- SelectInput with the names of the different columns : select the Facto
     output$uiChangeFa = renderUI({
       if (verif$dta_fac_load){
@@ -844,18 +853,18 @@ launch_APIShiny = function(){
         verif$displayed = verif$accou
         colnames(verif$accou)[which(colnames(verif$accou)==input$newSN2)]='SampleName'
         colnames(verif$accou)[which(colnames(verif$accou)==input$newFa)]='Facto'
-
+        
         colnames(verif$displayed)[which(colnames(verif$displayed)==input$newSN2)]=paste0(input$newSN2,' (SampleName)')
         colnames(verif$displayed)[which(colnames(verif$displayed)==input$newFa)]=paste0(input$newFa,' (Facto)')
       }
     })
-
+    
     #---Head of the dataset to help select corresponding columns
     output$head_fac = renderDataTable({
       datatable(head(verif$displayed),rownames = FALSE,options = list(dom = 't'),
                 caption = htmltools::tags$caption( style = 'caption-side: top; text-align: center; color:black;  font-size:150% ;','Head data factorial'))
     })
-
+    
     ##### Graph Verification #####
     #--- Plot of proba/mismatch between couple 1 and 2
     output$plot = renderPlot({
@@ -910,7 +919,7 @@ launch_APIShiny = function(){
         }
         ggsave(plot = to_plot$ggbar,filename = paste0("./Results_verif/",input$save_name2,"_barplot.png"),width = 18,height = 9)
         ggsave(plot = to_plot$ggheat+coord_fixed(),filename = paste0("./Results_verif/",input$save_name2,"_heatmap.png"),width = 12,height = 12)
-
+        
         txt=ggplot(data=data.frame(x=0,y=0),aes(x=.data$x,y=.data$y))+
           geom_text(x=0,y=0.9,label="Summary of the APIS assignment",size=10)+
           geom_text(x=0,y=0,label=paste(verif$out1,verif$out2,verif$out3,verif$out4,paste0("File name : ",input$data_res$name),sep = "\n"),size=3)+
@@ -922,7 +931,7 @@ launch_APIShiny = function(){
                 panel.background = element_blank(),
                 axis.text = element_blank())
         plot1 = plot_grid(txt,to_plot$ggbar,nrow=2)
-
+        
         if (is.null(input$tab_accou$datapath)){
           txt2=ggplot(data=data.frame(x=0,y=0),aes(x=.data$x,y=.data$y))+
             geom_text(x=0,y=0.9,label="Un-assigned offspring",size=5)+
@@ -942,13 +951,13 @@ launch_APIShiny = function(){
                   panel.background = element_blank(),
                   axis.text = element_blank())
         }
-
-
+        
+        
         nMAX = 15
         pdf(paste0("./Results_verif/",input$save_name2,"_summary.pdf"))
         print(plot1)
         print(to_plot$ggheat)
-
+        
         if (nrow(verif$tab)==0 & !is.null(input$tab_accou$datapath)){
           print("No out-of-plan assignment")
         } else if (nrow(verif$tab)==0 & is.null(input$tab_accou$datapath)){
@@ -974,106 +983,7 @@ launch_APIShiny = function(){
         print("----- Plot saved ! -----")
       }
     })
-    ##### INFAQUA #####
-    # infaqua = reactiveValues(file_off=data.frame(),tmp_off=data.frame(),changeSN=FALSE,changeID=FALSE,choices=NULL,choices2=NULL)
-    # observeEvent(input$id_off,{
-    #   if (!is.null(input$id_off$datapath)){
-    #     infaqua$changeSN=FALSE
-    #     infaqua$changeID=FALSE
-    #     infaqua$file_off = read.table(file = input$id_off$datapath,header = TRUE,sep = "\t")
-    #     if (length(infaqua$file_off)==1){
-    #       infaqua$file_off = read.table(file = input$id_off$datapath,header = TRUE,sep = ";")
-    #     }
-    #     if (is.null(infaqua$file_off$SampleName) & is.null(infaqua$file_off$CodeBarre)){
-    #       infaqua$changeSN=TRUE
-    #       infaqua$tmp_off=infaqua$file_off
-    #       infaqua$choices = colnames(infaqua$file_off)
-    #     } else if (is.null(infaqua$file_off$SampleName)){ # so there is CodeBarre
-    #       colnames(infaqua$file_off)[colnames(infaqua$file_off)=="CodeBarre"]="SampleName"
-    #     }
-    #     if(is.null(infaqua$file_off$ID)){
-    #       infaqua$changeID=TRUE
-    #       infaqua$tmp_off=infaqua$file_off
-    #       infaqua$choices2 = colnames(infaqua$file_off)
-    #     }
-    #   }
-    # })
-    # #--- Change SampleName INFAQUA -----
-    # output$changeSN3 <- reactive({
-    #   infaqua$changeSN
-    # })
-    # outputOptions(output, 'changeSN3', suspendWhenHidden=FALSE)
-    #
-    # #--- SelectInput with the names of the different columns : select the sample name
-    # output$uiChangeSN3 = renderUI({
-    #   if (infaqua$changeSN){
-    #     selectInput(inputId = "newSN3",
-    #                 label = div("Choose the variable corresponding to SampleName/CodeBarre",
-    #                             tipify(el = bsButton(inputId = "8",label = "",icon = icon("question"), style = "info", size = "extra-small"),
-    #                                    title = "Apparently, no column in your file has the name SampleName as it should have. So please select the corresponding SampleName column so that the formating for INFAQUA could run.")),
-    #                 choices = infaqua$choices,selected = 1,multiple = FALSE)
-    #   }
-    # })
-    # #--- Change ID INFAQUA -----
-    # output$changeID <- reactive({
-    #   infaqua$changeID
-    # })
-    # outputOptions(output, 'changeID', suspendWhenHidden=FALSE)
-    #
-    # #--- SelectInput with the names of the different columns : select the sample name
-    # output$uiChangeID = renderUI({
-    #   if (infaqua$changeID){
-    #     selectInput(inputId = "newID",
-    #                 label = div("Choose the variable corresponding to ID",
-    #                             tipify(el = bsButton(inputId = "9",label = "",icon = icon("question"), style = "info", size = "extra-small"),
-    #                                    title = "Apparently, no column in your file has the name ID as it should have. So please select the corresponding ID column so that the formating for INFAQUA could run.")),
-    #                 choices = infaqua$choices,selected = 1,multiple = FALSE)
-    #   }
-    # })
-    # #---Change the name in regard to what is selected as SampleName/ID
-    # observeEvent(c(input$newSN3,input$newID),{
-    #   if (!is.null(input$newSN3) & !is.null(input$newID)){
-    #     if (input$newSN3 != input$newID){
-    #       infaqua$file_off = infaqua$tmp_off
-    #       colnames(infaqua$file_off)[which(colnames(infaqua$file_off)==input$newSN3)]='SampleName'
-    #       colnames(infaqua$file_off)[which(colnames(infaqua$file_off)==input$newID)]='ID'
-    #     }
-    #   } else if (!is.null(input$newSN3)){
-    #     infaqua$file_off = infaqua$tmp_off
-    #     colnames(infaqua$file_off)[which(colnames(infaqua$file_off)==input$newSN3)]='SampleName'
-    #   } else if (!is.null(input$newID)){
-    #     infaqua$file_off = infaqua$tmp_off
-    #     colnames(infaqua$file_off)[which(colnames(infaqua$file_off)==input$newID)]='ID'
-    #   }
-    # })
-    # #--- Launch Save INFAQUA -----
-    # observeEvent(input$SaveInf,{
-    #   if (length(to_plot$ggbar$data)>0 & ! is.null(input$id_off$datapath)){ # Must launch verif first to load other dataset
-    #     if (!is.null(infaqua$file_off$SampleName)){
-    #       if (!dir.exists("./forINFAQUA")){
-    #         dir.create("./forINFAQUA")
-    #       }
-    #       verif$ped %>%
-    #         filter(.,!is.na(sire))%>%
-    #         left_join(.,infaqua$file_off,by=c("offspring"="SampleName"))%>%
-    #         mutate(.,IDoff=ID)%>%
-    #         select(.,-c("ID"))%>%
-    #         left_join(.,verif$accou%>%select(.,c("ID","SampleName")),by=c("sire"="SampleName"))%>%
-    #         mutate(.,IDsire=ID)%>%
-    #         select(.,-c("ID"))%>%
-    #         left_join(.,verif$accou%>%select(.,c("ID","SampleName")),by=c("dam"="SampleName"))%>%
-    #         mutate(.,IDdam=ID)%>%
-    #         select(.,-c("ID"))%>%
-    #         select(.,c("IDoff","offspring","IDdam","dam","IDsire","sire"))%>% # pour reordonner
-    #         rename(.,identifiant_adn=IDoff,adn_labo=offspring,
-    #                identifiant_adn_mere=IDdam,adn_labo_mere=dam,
-    #                identifiant_adn_pere=IDsire,adn_labo_pere=sire) %>%
-    #         write.table(.,file = paste0("./forINFAQUA/",input$save_name2,"_INFAQUA.csv"), quote = FALSE, row.names=FALSE,sep = ";",append=FALSE)
-    #     }
-    #   }
-    # })
-    ##### Fin INFAQUA #####
-
+    
     to_plot=reactiveValues(heatmap=data.frame(),ggbar=ggplot(),ggheat=ggplot())
     ##### Launch Verification #####
     observeEvent(input$launch_verif,{
@@ -1082,12 +992,16 @@ launch_APIShiny = function(){
         verif$data = log_APIS
         verif$ped = ped
         verif$threshold = estiThreshold
-
+        
         # Barplot
         nb_sire = verif$ped %>% group_by(.data$sire) %>% count()
         nb_dam = verif$ped %>% group_by(.data$dam) %>% count()
         tmp=data.frame(par=c(nb_sire$sire,nb_dam$dam),n=c(nb_sire$n,nb_dam$n))
         tmp$par=toupper(tmp$par)
+        
+        # New 2.0.5
+        df_par = df_par %>% select(.data$SampleName,.data$Sexe) %>% distinct()
+        
         df_par$SampleName=toupper(df_par$SampleName)
         barplot = left_join(df_par,tmp,by=c("SampleName"="par"))
         barplot$n[is.na(barplot$n)]=0
@@ -1105,10 +1019,10 @@ launch_APIShiny = function(){
                     median=median(.data$n,na.rm=T),nb0=count0(.data$n),nbdif0=countDif0(.data$n)) %>% round(digits = 2)
         verif$sentence_dam1 = paste0("Dam Number of Offspring -- Min : ",suma_dam$min," ; Max : ",suma_dam$max," ; Mean : ",suma_dam$mean," ; Median : ",suma_dam$median)
         verif$sentence_dam2 = paste0("Nb no off : ",suma_dam$nb0," -- Nb with off : ",suma_dam$nbdif0)
-
+        
         verif$sentence_sire1 = paste0("Sire Number of Offspring -- Min : ",suma_sire$min," ; Max : ",suma_sire$max," ; Mean : ",suma_sire$mean," ; Median : ",suma_sire$median)
         verif$sentence_sire2 = paste0("Nb no off : ",suma_sire$nb0," -- Nb with off : ",suma_sire$nbdif0)
-
+        
         # Def ggbar
         order_ind = barplot %>%
           arrange(.data$Sexe,desc(.data$n))%>%
@@ -1127,14 +1041,14 @@ launch_APIShiny = function(){
                 axis.ticks.x = element_blank(),
                 # axis.text.x = element_blank(),
                 axis.text.x = element_text(angle = 90, vjust = 0.5, size=5,face = "bold"))
-
+        
         # Heatmap
         tmp=verif$ped %>% group_by(sire,dam) %>% count() %>% arrange(desc(.data$n))
         ind_sire=df_par$SampleName[df_par$Sexe==1 | df_par$Sexe==3]
         ind_dam=df_par$SampleName[df_par$Sexe==2 | df_par$Sexe==4]
         tmp2=expand.grid(Sire=ind_sire,Dam=ind_dam)
         heatmap = left_join(tmp2,tmp,by=c("Sire"="sire","Dam"="dam"))
-
+        
         # Def ggheat
         if (!is.null(input$tab_accou)){
           verif$accou$SampleName=toupper(verif$accou$SampleName)
@@ -1150,7 +1064,7 @@ launch_APIShiny = function(){
             left_join(verif$accou,by=c("SampleName"="SampleName"),multiple="all") %>%
             arrange(.data$Facto) %>%
             select(.data$SampleName)
-
+          
           f_sire=data.frame(SN=unique(tmpSire$SampleName),Fa_sire=NA)
           for (k in 1:length(f_sire$SN)){
             sire_k=f_sire$SN[k]
@@ -1163,16 +1077,20 @@ launch_APIShiny = function(){
             f_k=paste0(sort(verif$accou$Facto[verif$accou$SampleName==dam_k]),collapse = "/")
             f_dam$Fa_dam[k]=f_k
           }
-
+          
           heatmap = heatmap %>%
             left_join(f_sire,by=c("Sire"="SN")) %>%
             left_join(f_dam,by=c("Dam"="SN"))
-
-
+          
+          
           heatmap$Sire=factor(heatmap$Sire,levels = unique(as.character(tmpSire$SampleName)))
           heatmap$Dam=factor(heatmap$Dam,levels = unique(as.character(tmpDam$SampleName)))
-
-          heatmap$Same = heatmap$Fa_sire==heatmap$Fa_dam
+          
+          if (length(unique(tmpDam$SampleName))==length(tmpDam$SampleName) & length(unique(tmpSire$SampleName))==length(tmpDam$SampleName)){
+            heatmap$Same = heatmap$Fa_sire==heatmap$Fa_dam
+          } else {
+            heatmap$Same = NA
+          }
           to_plot$ggheat=ggplot(data = heatmap,aes(x = .data$Sire,y = .data$Dam,fill = .data$n,text = paste0("Fac Sire : ",.data$Fa_sire,"<br>Fac Dam : ",.data$Fa_dam)))+
             geom_tile(col=heatmap$Same,linewidth=0.05,width=0.8,height=0.8)+
             scale_fill_gradient2(low = "#66CCFF", high = "#D55E00", mid="#F0E442",
@@ -1183,7 +1101,7 @@ launch_APIShiny = function(){
                                              size = 5, hjust = 1,face = "bold"))+
             theme(axis.text.y = element_text(angle = 0, vjust = 0.5,
                                              size = 5, hjust = 1,face="bold"))
-
+          
           # Indiv Hors Plan
           if (length(verif$accou$SampleName)==length(unique(verif$accou$SampleName))){
             tab_assign2 = left_join(verif$ped,verif$accou,by=c('sire'='SampleName')) %>% rename(FactoSire=.data$Facto) %>% select(.data$offspring,.data$sire,.data$dam,.data$FactoSire)
@@ -1193,14 +1111,14 @@ launch_APIShiny = function(){
             # names(tab_assign3)[7]='FactoDam'
             # tab_assign3 = tab_assign3[,-c(5,6)]
             indiv_pb=tab_assign3$offspring[which(tab_assign3$FactoSire!=tab_assign3$FactoDam)]
-
+            
             n_pb=length(indiv_pb)
             n_na=length(which(is.na(tab_assign3$sire)))
             n_tot=length(verif$ped$offspring)
           } else { # si il y a des individus avec plusieurs facto
             tab_assign2 = left_join(verif$ped,verif$accou,by=c('sire'='SampleName'),multiple = "all") %>% rename(FactoSire=.data$Facto) %>% select(.data$offspring,.data$sire,.data$dam,.data$FactoSire)
             tab_assign3 = left_join(tab_assign2,verif$accou,by=c('dam'='SampleName'),multiple = "all") %>% rename(FactoDam=.data$Facto) %>% select(.data$offspring,.data$sire,.data$dam,.data$FactoSire,.data$FactoDam)
-
+            
             n_pb=0
             n_na=0
             indiv_pb=c()
@@ -1235,8 +1153,12 @@ launch_APIShiny = function(){
           verif$out1=paste0("There is/are ",n_na," no assigned offspring(s) (",round((n_na/n_tot)*100,2),"%)\nand among assigned offspring(s) ",n_pb," have parents that are not in the same factorial (",round((n_pb/n_tot)*100,2),"%).")
           verif$out2=paste0("Real assignment rate : ",n_tot-n_pb-n_na,"/",n_tot,"=",round((n_tot-n_pb-n_na)*100/n_tot,2),"%.")
           verif$out3=paste0("The assignment was done using ",length(snp_kept)," markers.")
-          if (!mismatch_error){
+          if (!exists("mismatch_error")){
             verif$out4=paste0("The maximum theoretical error rate for this assignment is ",round(THRESHOLD,2)*100,"%.")
+          } else {
+            if (!mismatch_error){
+              verif$out4=paste0("The maximum theoretical error rate for this assignment is ",round(THRESHOLD,2)*100,"%.")
+            }
           }
           verif$tab=tab_assign3[tab_assign3$offspring %in% indiv_pb,]
         } else {
@@ -1250,46 +1172,74 @@ launch_APIShiny = function(){
                                              size = 5, hjust = 1,face = "bold"))+
             theme(axis.text.y = element_text(angle = 0, vjust = 0.5,
                                              size = 5, hjust = 1,face="bold"))
-
+          
           n_na=length(which(is.na(verif$ped$sire)))
           n_tot=length(verif$ped$sire)
-
+          
           verif$out1=paste0("There is/are ",n_na," no assigned offspring(s) (",round((n_na/n_tot)*100,2),"%).")
           verif$out2=paste0("Real assignment rate : ",n_tot-n_na,"/",n_tot,"=",round((n_tot-n_na)*100/n_tot,2),"%.")
           verif$out3=paste0("The assignment was done using ",length(snp_kept)," markers.")
-          if (!mismatch_error){
+          if (!exists("mismatch_error")){
             verif$out4=paste0("The maximum theoretical error rate for this assignment is ",round(THRESHOLD,2)*100,"%.")
+          } else {
+            if (!mismatch_error){
+              verif$out4=paste0("The maximum theoretical error rate for this assignment is ",round(THRESHOLD,2)*100,"%.")
+            }
           }
           verif$tab=verif$ped[which(is.na(verif$ped$sire)),]
         }
         verif$displayed = data.frame() # reinitialisation so that it does not overcharge the user experience
       }
     })
-
+    
     ##### Event from Formating #####
     formating=reactiveValues(data=NULL,head=NULL,end=NULL,
                              dataMap=NULL,
                              colFormat=FALSE,colMap=FALSE,
                              Lpar=NULL,import_vcf = FALSE)
-
+    
     #---Display launch button when ready
     output$go_format = renderUI({
       if (length(formating$head)!=0 | formating$import_vcf){
         actionButton(inputId = "format",label = "Launch formatting")
       }
     })
-
+    
     #---Load list with parents
     observeEvent(c(input$list_par,input$header_list_par),{
-      if (!is.null(input$list_par$datapath)){
+      if (!is.null(input$list_par$datapath) & !is.null(input$header_list_par)){
         if (input$header_list_par=='Yes'){
-          formating$Lpar = read.table(file = input$list_par$datapath,header = TRUE)
+          if (grepl(pattern = ".csv",x = input$list_par$datapath)){
+            tmp1 = read.table(file = input$list_par$datapath,header = TRUE,comment.char = "#",sep=";")
+            tmp2 = read.table(file = input$list_par$datapath,header = TRUE,comment.char = "#",sep=",")
+            if (ncol(tmp1)>ncol(tmp2)){
+              formating$Lpar=tmp1
+            } else {
+              formating$Lpar=tmp2
+            }
+            rm(tmp1,tmp2)
+            gc()
+          } else {
+            formating$Lpar = read.table(file = input$list_par$datapath,header = TRUE,comment.char = "#")
+          }
         } else {
-          formating$Lpar = read.table(file = input$list_par$datapath,header = FALSE)
+          if (grepl(pattern = ".csv",x = input$list_par$datapath)){
+            tmp1 = read.table(file = input$list_par$datapath,header = FALSE,comment.char = "#",sep=";")
+            tmp2 = read.table(file = input$list_par$datapath,header = FALSE,comment.char = "#",sep=",")
+            if (ncol(tmp1)>ncol(tmp2)){
+              formating$Lpar=tmp1
+            } else {
+              formating$Lpar=tmp2
+            }
+            rm(tmp1,tmp2)
+            gc()
+          } else {
+            formating$Lpar = read.table(file = input$list_par$datapath,header = FALSE,comment.char = "#")
+          }
         }
       }
     })
-
+    
     #---Check if there is a header and ask for the good column
     output$col_head0 = renderUI({
       if (!is.null(formating$Lpar)){
@@ -1308,21 +1258,31 @@ launch_APIShiny = function(){
       datatable(head(formating$Lpar),rownames = FALSE,options = list(dom = 't'),
                 caption = htmltools::tags$caption( style = 'caption-side: top; text-align: center; color:black;  font-size:150% ;','Head list parents'))
     })
-
+    
     #---Load genotype file to format and display the head of df to help select the columns
-    observeEvent(input$to_format,{
-      if (grepl(pattern = ".vcf",x = input$to_format$datapath)){
-        formating$import_vcf = TRUE
-      } else {
-        formating$import_vcf = FALSE
-        dta = read.table(file = input$to_format$datapath,header = FALSE,comment.char = "#")
-        colnames(dta) = 1:ncol(dta)
-        formating$data = dta
-        formating$colFormat=TRUE
-        if (ncol(formating$data)>20){
-          formating$head = head(formating$data)[,1:20]
+    observeEvent(c(input$to_format,input$header_file_format),{
+      if (! is.null(input$to_format) & ! is.null(input$header_file_format)){
+        header = ifelse(input$header_file_format=='Yes',TRUE,FALSE)
+        if (grepl(pattern = ".vcf",x = input$to_format$datapath)){
+          formating$import_vcf = TRUE
         } else {
-          formating$head = head(formating$data)
+          formating$import_vcf = FALSE
+          if (grepl(pattern = ".csv",x = input$to_format$datapath)) {
+            dta = read.table(file = input$to_format$datapath,header = header,comment.char = "#",sep = ";")
+            if (ncol(dta)==1){
+              dta = read.table(file = input$to_format$datapath,header = header,comment.char = "#",sep=",")
+            }
+          } else {
+            dta = read.table(file = input$to_format$datapath,header = header,comment.char = "#")
+          }
+          colnames(dta) = 1:ncol(dta) # change the colnames for easier use when choosing the number of the column
+          formating$data = dta
+          formating$colFormat=TRUE
+          if (ncol(formating$data)>20){
+            formating$head = head(formating$data,n = c(5,20))
+          } else {
+            formating$head = head(formating$data)
+          }
         }
       }
     })
@@ -1355,14 +1315,38 @@ launch_APIShiny = function(){
       formating$colFormat
     })
     outputOptions(output, 'colFormat', suspendWhenHidden=FALSE)
-
+    
     #---Load map or txt file with marker names and display the head of df to help select the column
     observeEvent(c(input$snp_map,input$header_snp_map),{
       if (!is.null(input$snp_map) & !is.null(input$header_snp_map)){
         if (input$header_snp_map=='Yes'){
-          formating$dataMap = read.table(file = input$snp_map$datapath,header = TRUE,comment.char = "#")
+          if (grepl(pattern = ".csv",x = input$snp_map$datapath)){
+            tmp1 = read.table(file = input$snp_map$datapath,header = TRUE,comment.char = "#",sep=";")
+            tmp2 = read.table(file = input$snp_map$datapath,header = TRUE,comment.char = "#",sep=",")
+            if (ncol(tmp1)>ncol(tmp2)){
+              formating$dataMap=tmp1
+            } else {
+              formating$dataMap=tmp2
+            }
+            rm(tmp1,tmp2)
+            gc()
+          } else {
+            formating$dataMap = read.table(file = input$snp_map$datapath,header = TRUE,comment.char = "#")
+          }
         } else {
-          formating$dataMap = read.table(file = input$snp_map$datapath,header = FALSE,comment.char = "#")
+          if (grepl(pattern = ".csv",x = input$snp_map$datapath)){
+            tmp1 = read.table(file = input$snp_map$datapath,header = FALSE,comment.char = "#",sep=";")
+            tmp2 = read.table(file = input$snp_map$datapath,header = FALSE,comment.char = "#",sep=",")
+            if (ncol(tmp1)>ncol(tmp2)){
+              formating$dataMap=tmp1
+            } else {
+              formating$dataMap=tmp2
+            }
+            rm(tmp1,tmp2)
+            gc()
+          } else {
+            formating$dataMap = read.table(file = input$snp_map$datapath,header = FALSE,comment.char = "#")
+          }
         }
         formating$colMap=TRUE
       }
@@ -1393,21 +1377,21 @@ launch_APIShiny = function(){
         if (!dir.exists("./log")){
           dir.create("./log")
         }
-
-        # Set the saving name
-        indice1 = regexpr(pattern = ".ped",text = input$to_format$name,fixed = TRUE)
-        indice2 = regexpr(pattern = ".txt",text = input$to_format$name,fixed = TRUE)
+        
+        # # Set the saving name
+        # indice1 = regexpr(pattern = ".ped",text = input$to_format$name,fixed = TRUE)
+        # indice2 = regexpr(pattern = ".txt",text = input$to_format$name,fixed = TRUE)
         indice_vcf = regexpr(pattern = ".vcf",text = input$to_format$name,fixed = TRUE)
-        if (indice1!=-1 | indice2!=-1 | indice_vcf!=-1){
-          saving_name = substr(x = input$to_format$name,start = 1,stop = nchar(input$to_format$name)-4)
+        # if (indice1!=-1 | indice2!=-1 | indice_vcf!=-1){
+        #   saving_name = substr(x = input$to_format$name,start = 1,stop = nchar(input$to_format$name)-4)
+        # } else {
+        indice=gregexpr(pattern = ".",text = input$to_format$name,fixed = TRUE)[[1]]
+        if (indice[1] !=-1){
+          saving_name = substr(x = input$to_format$name,start = 1,stop = indice[length(indice)]-1)
         } else {
-          indice=gregexpr(pattern = ".",text = input$to_format$name,fixed = TRUE)[[1]]
-          if (indice[1] !=-1){
-            saving_name = substr(x = input$to_format$name,start = 1,stop = indice[length(indice)]-1)
-          } else {
-            saving_name = input$to_format$name
-          }
+          saving_name = input$to_format$name
         }
+        # }
         print("-----Formating dataset-----")
         date_time = Sys.time()
         date_time=gsub(pattern = "-",replacement = "",x = date_time)
@@ -1422,7 +1406,8 @@ launch_APIShiny = function(){
         }
         write(x = paste0("Dataset : ",input$to_format$name),file = path_log,append = TRUE)
         if (! formating$import_vcf){
-          dta = read.table(file = input$to_format$datapath,header = FALSE,comment.char = "#")
+          # dta = read.table(file = input$to_format$datapath,header = FALSE,comment.char = "#")
+          dta = formating$data
           if(!is.null(input$snp_map$name)){
             write(x = paste0("Marker file : ",input$snp_map$name),file = path_log,append = TRUE)
             marker_name=formating$dataMap[,as.numeric(input$col_marker)]
@@ -1431,19 +1416,17 @@ launch_APIShiny = function(){
             write(x = "No marker file provided : markers names are Marker1, Marker2, ...",file = path_log,append = TRUE)
           }
         }
-
-        if (indice_vcf!=-1){
+        
+        if (formating$import_vcf){
           dta = import_from_vcf(input$to_format$datapath)
           rownames(dta) = toupper(rownames(dta))
           SampleName = rownames(dta)
         } else {
           SampleName = dta[,as.numeric(input$col_SN)]
-          if (indice1 != -1){
-            indice1=regexpr(pattern="_[A-Z][0-9][0-9].CEL$",SampleName)
-            indice2=regexpr(pattern="_[A-Z][0-9].CEL$",SampleName)
-            SampleName[indice1!=-1]=substr(x = SampleName[indice1!=-1],start = 1,stop = (indice1[indice1!=-1]-1))
-            SampleName[indice2!=-1]=substr(x = SampleName[indice2!=-1],start = 1,stop = (indice2[indice2!=-1]-1))
-          }
+          indice1=regexpr(pattern="_[A-Z][0-9][0-9].CEL$",SampleName)
+          indice2=regexpr(pattern="_[A-Z][0-9].CEL$",SampleName)
+          SampleName[indice1!=-1]=substr(x = SampleName[indice1!=-1],start = 1,stop = (indice1[indice1!=-1]-1))
+          SampleName[indice2!=-1]=substr(x = SampleName[indice2!=-1],start = 1,stop = (indice2[indice2!=-1]-1))
           SampleName=toupper(SampleName) # au cas ou 'en' en minuscule
           dta=dta[,-c(1:(as.numeric(input$col_geno)-1))]
           dta[dta==0]=NA
@@ -1461,12 +1444,12 @@ launch_APIShiny = function(){
             par_nam[indice1!=-1]=substr(x = par_nam[indice1!=-1],start = 1,stop = (indice1[indice1!=-1]-1))
             par_nam[indice2!=-1]=substr(x = par_nam[indice2!=-1],start = 1,stop = (indice2[indice2!=-1]-1))
             par_nam=toupper(par_nam) # au cas ou 'en' en minuscule
-
+            
             data_par = dta[SampleName %in% par_nam,]
             data_off = dta[! SampleName %in% par_nam,]
-
+            
             # For parents
-            if (indice_vcf==-1){
+            if (! grepl(pattern = ".vcf",x = input$to_format$name,fixed = TRUE)){
               res=Run_formating(data = data_par,
                                 SampleName = SampleName[SampleName %in% par_nam],
                                 marker_name = marker_name,
@@ -1476,7 +1459,7 @@ launch_APIShiny = function(){
               df_SNP=res[[2]]
             } else {
               allele_freq = as.data.frame(get_allele_frequencies(data_par,ploidy_level = 2))
-
+              
               if (!is.null(allele_freq$Freq_NA)){
                 df_SNP = data.frame(MarkerName=rownames(allele_freq),toKeep=TRUE,CR=1-allele_freq$Freq_NA)
               } else {
@@ -1484,9 +1467,9 @@ launch_APIShiny = function(){
               }
             }
             save(data_par,df_SNP,file=paste0("./data/",saving_name,"_Parents_genoAPIS.Rdata"))
-
+            
             # For offspring
-            if (indice_vcf==-1){
+            if (! grepl(pattern = ".vcf",x = input$to_format$name,fixed = TRUE)){
               res=Run_formating(data = data_off,
                                 SampleName = SampleName[! SampleName %in% par_nam],
                                 marker_name = marker_name,
@@ -1507,7 +1490,7 @@ launch_APIShiny = function(){
           }
         } else {
           # If only parents or offspring
-          if (indice_vcf==-1){
+          if (! grepl(pattern = ".vcf",x = input$to_format$name,fixed = TRUE)){
             res=Run_formating(data = dta,
                               SampleName = SampleName,
                               marker_name = marker_name,

@@ -122,7 +122,7 @@ get_probabilities_parallel_2n <- function(offspring_genotype, sire_genotype, dam
 #' data("APIS_sire")
 #' data("APIS_dam")
 #'
-#' assignment <- APIS_2n(offspring_genotype = APIS_offspring[1:35,1:50],
+#' assignment <- APIS_2n(offspring_genotype = APIS_offspring[1:20,1:50],
 #'                       sire_genotype = APIS_sire[ ,1:50],
 #'                       dam_genotype = APIS_dam[ ,1:50],
 #'                       simulation_if_small = FALSE)
