@@ -208,7 +208,7 @@ launch_APIShiny = function(){
                               dataTableOutput(outputId = "headMap"),
                               textOutput(outputId = "end_format")),
              conditionalPanel(condition = "input.nav==1",
-                              a("Input .Rdata or .txt format example",href="/www/Data_Example.txt",target="_blank"), # for hyperlink
+                              a("Input .txt format example",href="/www/Data_Example.txt",target="_blank"), # for hyperlink
                               h6("You can find 'log_APIS.txt' in './log' directory for more info."),
                               # a("log APIS",href="/www/log/log_APIS.txt",target="_blank"), # for hyperlink
                               dataTableOutput(outputId = "head_sex"),
@@ -242,14 +242,14 @@ launch_APIShiny = function(){
     bsTooltip(id = "qx2",title = "Select whether there is only parents/offspring or if there is both in the .ped file<br/>If it is both, a file with parents names will be asked to separate parents from offspring"),
     bsTooltip(id = "qx3",title = "The .txt file with the parents names must be an unique column as follow (no header) :<br/>Indiv1<br/>Indiv2<br/>Indiv3<br/>..."),
     bsTooltip(id = "qx4",title = "File with MarkerName in the same order as the genotype in the input file<br/>Can be .txt file with all marker names as a single column (no header) or the file created by AXAS (for example) with the markers names with the extension .map<br/>It is used to have the names of the markers (no provided in .ped file)"),
-    bsTooltip(id = "q1",title = "File created by the genotyping application (or during formating phase) with extension _genoAPIS.Rdata<br/>Can also be a .txt file with marker as columns and individuals as rows with genotype format as A/A/A or A/A.<br/>This is the offspring dataset"),
-    bsTooltip(id = "q2",title = "File created by the genotyping application (or during formating phase) with extension _genoAPIS.Rdata<br/>Can also be a .txt file with marker as columns and individuals as rows with genotype format as A/A.<br/>This is the parents dataset"),
+    bsTooltip(id = "q1",title = "File created by the genotyping application (or during formating phase) with extension _genoAPIS.Rdata<br/>Can also be a .txt file with marker as columns and individuals as rows with genotype format as A/A/A or A/A (see input format example).<br/>This is the offspring dataset"),
+    bsTooltip(id = "q2",title = "File created by the genotyping application (or during formating phase) with extension _genoAPIS.Rdata<br/>Can also be a .txt file with marker as columns and individuals as rows with genotype format as A/A(see input format example).<br/>This is the parents dataset"),
     bsTooltip(id = "q3",title = "A file containing at least two rows : SampleName (or CodeBarre) & Sex like so :<br/>SampleName  Sex<br/>Name1  Sex1<br/>Name2  Sex2<br/>Name3  Sex3<br/>...  ...<br/>The SampleName variable is the name of the sample as in the genotyping application.<br/>The Sex variable should take values from 1 to 3 : 1, male ; 2, female ; 3, neo-male ; 4, neo-female<br/>It is used to separate male from female"),
     bsTooltip(id = "q4",title = "A file containing one row with NO header like so :<br/>Marker1<br/>Marker2<br/>Marker3<br/>...  ...<br/>Only those markers will be used ofr assignment at the condition that they are in the dataset."),
     bsTooltip(id = "q5",title = "Select 2 if offspring are diploids and 3 if they are triploids"),
     bsTooltip(id = "q131",title = "Tick if male (sire) and female (dam) parents are in the same dataset"),
-    bsTooltip(id = "q2.1",title = "File created by the genotyping application (or during formating phase) with extension _genoAPIS.Rdata<br/>File with only the male (sire) parents.<br/>Can also be a .txt file with marker as columns and individuals as rows with genotype format as A/A."),
-    bsTooltip(id = "q2.2",title = "File created by the genotyping application (or during formating phase) with extension _genoAPIS.Rdata<br/>File with only the female (dam) parents.<br/>Can also be a .txt file with marker as columns and individuals as rows with genotype format as A/A."),
+    bsTooltip(id = "q2.1",title = "File created by the genotyping application (or during formating phase) with extension _genoAPIS.Rdata<br/>File with only the male (sire) parents.<br/>Can also be a .txt file with marker as columns and individuals as rows with genotype format as A/A (see input format example)."),
+    bsTooltip(id = "q2.2",title = "File created by the genotyping application (or during formating phase) with extension _genoAPIS.Rdata<br/>File with only the female (dam) parents.<br/>Can also be a .txt file with marker as columns and individuals as rows with genotype format as A/A (see input format example)."),
     bsTooltip(id = "q111",title = "If the loaded file has a header, select Yes. If it is a single column file with no header, select No."),
     bsTooltip(id = "q1110",title = "If the loaded file has a header, select Yes. If it is a single column file with no header, select No."),
     bsTooltip(id = "q11100",title = "If the loaded file has a header, select Yes. If it is a single column file with no header, select No."),
@@ -281,12 +281,17 @@ launch_APIShiny = function(){
     observeEvent(input$data_off,{
       if (!is.null(input$data_off$datapath)){
         if (grepl(pattern = ".txt",x = input$data_off$name)){
-          dataset$off = read.table(file=input$data_off$datapath)
+          tmp = read.table(file=input$data_off$datapath,header=T)
+          SN = tmp[,1]
+          dataset$off = as.matrix(tmp[,-1])
+          rownames(dataset$off)=SN
+          # dataset$off = read.table(file=input$data_off$datapath)
           allele_freq = as.data.frame(get_allele_frequencies(dataset$off,ploidy_level = as.numeric(input$ploidy)))
           min_non_0 = function(x){
             x[x==min(x[x!=0])][1]
           }
-          dataset$snp_off = data.frame(MarkerName=rownames(allele_freq),toKeep=TRUE,MAF=apply(X = allele_freq %>% select(.data$Freq_A,.data$Freq_T,.data$Freq_C,.data$Freq_G),MARGIN = 1,FUN = min_non_0,simplify = TRUE))
+          variable=colnames(allele_freq)
+          dataset$snp_off = data.frame(MarkerName=rownames(allele_freq),toKeep=TRUE,MAF=apply(X = allele_freq %>% select(variable[grep(pattern = "Freq_",x = variable)]),MARGIN = 1,FUN = min_non_0,simplify = TRUE))
         } else if (grepl(pattern = ".Rdata",x = input$data_off$name)){
           tmp=load(file = input$data_off$datapath)
           eval(parse(text = paste0("dataset$off = ",tmp[1])))
@@ -300,7 +305,10 @@ launch_APIShiny = function(){
     observeEvent(input$data_par,{
       if (!is.null(input$data_par$datapath)){
         if (grepl(pattern = ".txt",x = input$data_par$name)){
-          dataset$par = read.table(file=input$data_par$datapath)
+          tmp = read.table(file=input$data_par$datapath,header=T)
+          SN = tmp[,1]
+          dataset$par = as.matrix(tmp[,-1])
+          rownames(dataset$par)=SN
           
           allele_freq = as.data.frame(get_allele_frequencies(dataset$par,ploidy_level = 2))
           
@@ -323,7 +331,10 @@ launch_APIShiny = function(){
     observeEvent(c(input$data_par1,input$data_par2),{
       if (!is.null(input$data_par1$datapath) & !is.null(input$data_par2$datapath)){
         if (grepl(pattern = ".txt",x = input$data_par1$name)){
-          tmp1.1 = read.table(file=input$data_par1$datapath)
+          tmp = read.table(file=input$data_par1$datapath,header=T)
+          SN = tmp[,1]
+          tmp1.1 = as.matrix(tmp[,-1])
+          rownames(tmp1.1)=SN
           
           allele_freq1 = as.data.frame(get_allele_frequencies(tmp1.1,ploidy_level = 2))
           
@@ -342,7 +353,10 @@ launch_APIShiny = function(){
         }
         
         if (grepl(pattern = ".txt",x = input$data_par2$name)){
-          tmp2.1 = read.table(file=input$data_par2$datapath)
+          tmp = read.table(file=input$data_par2$datapath,header=T)
+          SN = tmp[,1]
+          tmp2.1 = as.matrix(tmp[,-1])
+          rownames(tmp2.1)=SN
           
           allele_freq2 = as.data.frame(get_allele_frequencies(tmp2.1,ploidy_level = 2))
           
@@ -366,7 +380,7 @@ launch_APIShiny = function(){
                                      CR=(tmp1.2$CR[tmp1.2$MarkerName %in% marker_shared]*nrow(tmp1.1)+tmp2.2$CR[tmp2.2$MarkerName %in% marker_shared]*nrow(tmp2.1))/(nrow(tmp1.1)+nrow(tmp2.1)),
                                      toKeep=TRUE)
         
-        dataset$par = rbind(tmp1.1 %>% select(all_of(marker_shared)),tmp2.1 %>% select(all_of(marker_shared)))
+        dataset$par = rbind(tmp1.1 %>% as.data.frame() %>% select(all_of(marker_shared)),tmp2.1 %>% as.data.frame() %>% select(all_of(marker_shared)))
         
         dataset$sexe = rbind(data.frame(SampleName=rownames(tmp1.1),Sexe=1),data.frame(SampleName=rownames(tmp2.1),Sexe=2))
       }
@@ -1412,11 +1426,10 @@ launch_APIShiny = function(){
             write(x = paste0("Marker file : ",input$snp_map$name),file = path_log,append = TRUE)
             marker_name=formating$dataMap[,as.numeric(input$col_marker)]
           } else {
-            marker_name=paste0("Marker",seq(1,(ncol(dta)-1)/as.numeric(input$ploidy_format),1))
+            marker_name=paste0("Marker",seq(1,ncol(dta[,-c(1:(input$col_geno-1))])/as.numeric(input$ploidy_format),1))
             write(x = "No marker file provided : markers names are Marker1, Marker2, ...",file = path_log,append = TRUE)
           }
         }
-        
         if (formating$import_vcf){
           dta = import_from_vcf(input$to_format$datapath)
           rownames(dta) = toupper(rownames(dta))

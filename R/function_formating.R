@@ -20,8 +20,8 @@ Run_formating=function(data,SampleName,marker_name,ploidy,marker_type){
   CR=c()
   for (k in 1:(ncol(data)/ploidy)){
     new_data[,k]=apply(X = data[,(ploidy*(k-1)+1):(ploidy*k)],MARGIN = 1,FUN = paste,collapse = "/")
+    x=as.vector(as.matrix(data[,(ploidy*(k-1)+1):(ploidy*k)]))
     if (marker_type=="SNP"){
-      x=as.vector(as.matrix(data[,(ploidy*(k-1)+1):(ploidy*k)]))
       g=unique(x)[!is.na(unique(x))]
       if (length(g)==2){ # nombre dallele == 2
         f1=length(x[x==g[1] & !is.na(x)])/length(x[!is.na(x)])
